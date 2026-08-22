@@ -18,6 +18,7 @@ const contestRecordsBody = document.querySelector("#contest-records-body");
 
 let records = [];
 let wfQualifications = [];
+let firstBloodIndex = new Map();
 
 function createElement(tag, className, text) {
   const element = document.createElement(tag);
@@ -72,6 +73,38 @@ function validateWfQualifications(data) {
   });
 }
 
+function validateFirstBlood(data) {
+  if (!Array.isArray(data)) throw new Error("一血数据不是数组");
+
+  return data.map((firstBlood) => {
+    if (
+      !firstBlood.season ||
+      !firstBlood.contest ||
+      !firstBlood.team ||
+      !firstBlood.problem ||
+      !firstBlood.color ||
+      !firstBlood.textColor
+    ) {
+      throw new Error("发现格式不正确的一血记录");
+    }
+    return firstBlood;
+  });
+}
+
+function recordKey(record) {
+  return JSON.stringify([record.season, record.contest, record.team]);
+}
+
+function indexFirstBlood(items) {
+  const index = new Map();
+  for (const item of items) {
+    const key = recordKey(item);
+    if (!index.has(key)) index.set(key, []);
+    index.get(key).push(item);
+  }
+  return index;
+}
+
 function wfBadge(className = "") {
   const badge = createElement("span", `wf-badge ${className}`.trim(), "WF");
   badge.title = "World Finals";
@@ -107,11 +140,23 @@ function contestButton(contest) {
   return button;
 }
 
-function resultElement(record) {
+function firstBloodElement(firstBlood) {
+  const balloon = createElement("span", "first-blood-balloon", firstBlood.problem);
+  balloon.style.setProperty("--balloon-color", firstBlood.color);
+  balloon.style.setProperty("--balloon-text", firstBlood.textColor);
+  balloon.title = `${firstBlood.problem} 题全场一血`;
+  balloon.setAttribute("aria-label", `${firstBlood.problem} 题全场一血`);
+  return balloon;
+}
+
+function resultElement(record, includeRank = true) {
   const result = createElement("span", `result ${MEDAL_CLASS[record.award]}`);
   result.append(document.createTextNode(`${record.award}奖`));
-  if (record.rank !== null) {
+  if (includeRank && record.rank !== null) {
     result.append(createElement("span", "result-rank", ` · ${record.rank}`));
+  }
+  for (const firstBlood of firstBloodIndex.get(recordKey(record)) || []) {
+    result.append(firstBloodElement(firstBlood));
   }
   result.title =
     record.rank === null ? `${record.award}奖` : `${record.award}奖，第 ${record.rank} 名`;
@@ -296,7 +341,7 @@ function showContest(contest) {
       createElement("td", "", honor.team),
     );
     const award = createElement("td");
-    award.append(createElement("span", `result ${MEDAL_CLASS[honor.award]}`, `${honor.award}奖`));
+    award.append(resultElement(honor));
     row.append(award);
     contestRecordsBody.append(row);
   }
@@ -332,10 +377,15 @@ function fetchJson(path) {
   });
 }
 
-Promise.all([fetchJson("data/awards.json"), fetchJson("data/wf.json")])
-  .then(([awardData, wfData]) => {
+Promise.all([
+  fetchJson("data/awards.json"),
+  fetchJson("data/wf.json"),
+  fetchJson("data/first_blood.json"),
+])
+  .then(([awardData, wfData, firstBloodData]) => {
     records = validateRecords(awardData);
     wfQualifications = validateWfQualifications(wfData);
+    firstBloodIndex = indexFirstBlood(validateFirstBlood(firstBloodData));
     renderSeasons();
     loadingStatus.hidden = true;
   })

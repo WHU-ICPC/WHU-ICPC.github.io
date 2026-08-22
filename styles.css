@@ -400,10 +400,42 @@ main {
 }
 
 .result {
-  display: block;
+  display: flex;
+  gap: 0.32rem;
+  align-items: center;
   margin-bottom: 0.2rem;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
+}
+
+.first-blood-balloon {
+  position: relative;
+  display: inline-grid;
+  flex: 0 0 1.12rem;
+  place-items: center;
+  width: 1.12rem;
+  height: 1.12rem;
+  margin-right: 0.08rem;
+  border-radius: 50% 50% 46% 46%;
+  background: var(--balloon-color);
+  color: var(--balloon-text);
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.first-blood-balloon::after {
+  position: absolute;
+  bottom: -0.13rem;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-right: 0.16rem solid transparent;
+  border-bottom: 0;
+  border-left: 0.16rem solid transparent;
+  border-top: 0.19rem solid var(--balloon-color);
+  content: "";
+  transform: translateX(-50%);
 }
 
 .result-rank {

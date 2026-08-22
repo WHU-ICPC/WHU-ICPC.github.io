@@ -1,0 +1,34 @@
+[
+  {
+    "season": "2021-2022",
+    "contest": "ICPC 上海",
+    "team": "菜就多练(practice make vegetable)",
+    "problem": "M",
+    "color": "rgba(0, 0, 0, 0.7)",
+    "textColor": "#fff"
+  },
+  {
+    "season": "2022-2023",
+    "contest": "ICPC 杭州",
+    "team": "mikumikumi(watashihamikudesu)",
+    "problem": "F",
+    "color": "rgba(243, 88, 20, 0.7)",
+    "textColor": "#fff"
+  },
+  {
+    "season": "2022-2023",
+    "contest": "ICPC 西安",
+    "team": "放学后茶会(After School Tea Time)",
+    "problem": "G",
+    "color": "rgba(12, 76, 138, 0.7)",
+    "textColor": "#fff"
+  },
+  {
+    "season": "2025-2026",
+    "contest": "ICPC 南京",
+    "team": "很弱的低手",
+    "problem": "C",
+    "color": "#008000",
+    "textColor": "#000000"
+  }
+]
