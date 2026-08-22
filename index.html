@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#ffffff" />
     <title>WHU ACM-ICPC</title>
     <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=11" />
-    <script src="script.js?v=2" defer></script>
+    <link rel="stylesheet" href="styles.css?v=12" />
+    <script src="script.js?v=3" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -45,6 +45,27 @@
               </tr>
             </thead>
             <tbody id="person-records-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="contest-dialog" class="person-dialog" aria-labelledby="contest-name">
+      <div class="dialog-shell">
+        <button class="dialog-close" type="button" aria-label="关闭比赛记录">×</button>
+        <header class="dialog-header">
+          <h2 id="contest-name"></h2>
+        </header>
+        <div class="person-records-wrap">
+          <table class="person-records contest-records">
+            <thead>
+              <tr>
+                <th scope="col">赛季</th>
+                <th scope="col">队伍</th>
+                <th scope="col">奖项</th>
+              </tr>
+            </thead>
+            <tbody id="contest-records-body"></tbody>
           </table>
         </div>
       </div>

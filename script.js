@@ -9,11 +9,12 @@ const collator = new Intl.Collator("zh-CN", { numeric: true });
 
 const seasonList = document.querySelector("#season-list");
 const loadingStatus = document.querySelector("#loading-status");
-const dialog = document.querySelector("#person-dialog");
-const dialogShell = dialog.querySelector(".dialog-shell");
-const dialogClose = dialog.querySelector(".dialog-close");
+const personDialog = document.querySelector("#person-dialog");
 const personName = document.querySelector("#person-name");
 const personRecordsBody = document.querySelector("#person-records-body");
+const contestDialog = document.querySelector("#contest-dialog");
+const contestName = document.querySelector("#contest-name");
+const contestRecordsBody = document.querySelector("#contest-records-body");
 
 let records = [];
 let wfQualifications = [];
@@ -98,6 +99,14 @@ function personButton(name) {
   return button;
 }
 
+function contestButton(contest) {
+  const button = createElement("button", "contest-button", contest);
+  button.type = "button";
+  button.dataset.contest = contest;
+  button.setAttribute("aria-label", `查看 ${contest} 的获奖记录`);
+  return button;
+}
+
 function resultElement(record) {
   const result = createElement("span", `result ${MEDAL_CLASS[record.award]}`);
   result.append(document.createTextNode(`${record.award}奖`));
@@ -159,8 +168,9 @@ function seasonTable(seasonRecords, season) {
   headRow.append(teamHeading, memberHeading);
 
   for (const contest of contests) {
-    const heading = createElement("th", "contest-heading", contest);
+    const heading = createElement("th", "contest-heading");
     heading.scope = "col";
+    heading.append(contestButton(contest));
     headRow.append(heading);
   }
   head.append(headRow);
@@ -264,19 +274,56 @@ function showPerson(name) {
     personRecordsBody.append(row);
   }
 
-  dialog.showModal();
+  personDialog.showModal();
+}
+
+function showContest(contest) {
+  const honors = records
+    .filter((record) => record.contest === contest)
+    .sort(
+      (left, right) =>
+        seasonStart(right.season) - seasonStart(left.season) ||
+        collator.compare(left.team, right.team),
+    );
+
+  contestName.textContent = contest;
+  contestRecordsBody.replaceChildren();
+
+  for (const honor of honors) {
+    const row = document.createElement("tr");
+    row.append(
+      createElement("td", "", seasonLabel(honor.season)),
+      createElement("td", "", honor.team),
+    );
+    const award = createElement("td");
+    award.append(createElement("span", `result ${MEDAL_CLASS[honor.award]}`, `${honor.award}奖`));
+    row.append(award);
+    contestRecordsBody.append(row);
+  }
+
+  contestDialog.showModal();
 }
 
 document.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-person]");
-  if (button) showPerson(button.dataset.person);
+  const contest = event.target.closest("[data-contest]");
+  if (contest) {
+    showContest(contest.dataset.contest);
+    return;
+  }
+
+  const person = event.target.closest("[data-person]");
+  if (person) showPerson(person.dataset.person);
 });
 
-dialogClose.addEventListener("click", () => dialog.close());
-dialog.addEventListener("click", (event) => {
-  if (event.target === dialog) dialog.close();
-});
-dialogShell.addEventListener("click", (event) => event.stopPropagation());
+for (const recordDialog of [personDialog, contestDialog]) {
+  const shell = recordDialog.querySelector(".dialog-shell");
+  const close = recordDialog.querySelector(".dialog-close");
+  close.addEventListener("click", () => recordDialog.close());
+  recordDialog.addEventListener("click", (event) => {
+    if (event.target === recordDialog) recordDialog.close();
+  });
+  shell.addEventListener("click", (event) => event.stopPropagation());
+}
 
 function fetchJson(path) {
   return fetch(path).then((response) => {

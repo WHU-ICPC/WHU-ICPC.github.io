@@ -154,6 +154,7 @@ main {
 
 .season > summary:focus-visible,
 .person-button:focus-visible,
+.contest-button:focus-visible,
 .dialog-close:focus-visible {
   outline: 0.15rem solid var(--primary);
   outline-offset: -0.15rem;
@@ -367,7 +368,24 @@ main {
   cursor: pointer;
 }
 
-.person-button:hover {
+.contest-button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--primary);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.contest-heading .contest-button {
+  color: inherit;
+  font-weight: inherit;
+}
+
+.person-button:hover,
+.contest-button:hover {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
@@ -496,6 +514,22 @@ main {
 
 .person-records th:nth-child(4) {
   width: 14%;
+}
+
+.contest-records {
+  min-width: 32rem;
+}
+
+.contest-records th:nth-child(1) {
+  width: 25%;
+}
+
+.contest-records th:nth-child(2) {
+  width: 55%;
+}
+
+.contest-records th:nth-child(3) {
+  width: 20%;
 }
 
 .person-records td:first-child {
