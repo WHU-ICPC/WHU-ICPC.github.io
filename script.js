@@ -16,6 +16,7 @@ const personName = document.querySelector("#person-name");
 const personRecordsBody = document.querySelector("#person-records-body");
 
 let records = [];
+let wfQualifications = [];
 
 function createElement(tag, className, text) {
   const element = document.createElement(tag);
@@ -59,6 +60,30 @@ function validateRecords(data) {
   });
 }
 
+function validateWfQualifications(data) {
+  if (!Array.isArray(data)) throw new Error("WF 数据不是数组");
+
+  return data.map((qualification) => {
+    if (!qualification.season || !qualification.team) {
+      throw new Error("发现格式不正确的 WF 记录");
+    }
+    return qualification;
+  });
+}
+
+function wfBadge(className = "") {
+  const badge = createElement("span", `wf-badge ${className}`.trim(), "WF");
+  badge.title = "World Finals";
+  badge.setAttribute("aria-label", "World Finals");
+  return badge;
+}
+
+function seasonWfTeams(season) {
+  return wfQualifications
+    .filter((qualification) => qualification.season === season)
+    .map((qualification) => qualification.team);
+}
+
 function medalCountElement(award, count) {
   const item = createElement("span", `medal-count ${MEDAL_CLASS[award]}`);
   item.append(createElement("span", "", award), createElement("strong", "", count));
@@ -100,6 +125,7 @@ function compareTeams(left, right) {
 
 function seasonTable(seasonRecords, season) {
   const contests = [...new Set(seasonRecords.map((record) => record.contest))];
+  const wfTeams = new Set(seasonWfTeams(season));
   const teams = new Map();
 
   for (const record of seasonRecords) {
@@ -142,7 +168,13 @@ function seasonTable(seasonRecords, season) {
   const body = document.createElement("tbody");
   for (const team of [...teams.values()].sort(compareTeams)) {
     const row = document.createElement("tr");
-    row.append(createElement("td", "team-cell", team.team));
+    const teamCell = createElement("td", "team-cell");
+    if (wfTeams.has(team.team)) {
+      teamCell.append(wfBadge("wf-team-badge"), document.createTextNode(team.team));
+    } else {
+      teamCell.textContent = team.team;
+    }
+    row.append(teamCell);
 
     const membersCell = createElement("td", "member-cell");
     team.members.forEach((member, index) => {
@@ -176,6 +208,14 @@ function renderSeason(season, seasonRecords, index) {
 
   const counts = countMedals(seasonRecords);
   const countGroup = createElement("span", "medal-counts");
+  const wfTeams = seasonWfTeams(season);
+  if (wfTeams.length > 0) {
+    countGroup.append(wfBadge("wf-season-badge"));
+  } else {
+    const placeholder = createElement("span", "wf-season-placeholder");
+    placeholder.setAttribute("aria-hidden", "true");
+    countGroup.append(placeholder);
+  }
   for (const award of MEDAL_ORDER) {
     countGroup.append(medalCountElement(award, counts[award]));
   }
@@ -238,13 +278,17 @@ dialog.addEventListener("click", (event) => {
 });
 dialogShell.addEventListener("click", (event) => event.stopPropagation());
 
-fetch("data/awards.json")
-  .then((response) => {
-    if (!response.ok) throw new Error(`无法读取奖项数据（${response.status}）`);
+function fetchJson(path) {
+  return fetch(path).then((response) => {
+    if (!response.ok) throw new Error(`无法读取数据（${response.status}）`);
     return response.json();
-  })
-  .then((data) => {
-    records = validateRecords(data);
+  });
+}
+
+Promise.all([fetchJson("data/awards.json"), fetchJson("data/wf.json")])
+  .then(([awardData, wfData]) => {
+    records = validateRecords(awardData);
+    wfQualifications = validateWfQualifications(wfData);
     renderSeasons();
     loadingStatus.hidden = true;
   })

@@ -12,13 +12,7 @@ python -m http.server 8000
 
 ## 更新数据
 
-原始数据位于 `init/awards.json` 和 `init/WHU-XCPC 2021-2025暑假集训排名和后续成绩.xlsx`。更新原始文件后运行：
-
-```powershell
-python tools/build_awards.py
-```
-
-脚本会把两份来源清洗为 `data/awards.json`，并将社团 Logo 复制到 `assets/logo.svg`。2021–2026 赛季以 Excel 的队伍、队员、奖项和比赛名次为准，更早赛季来自 JSON；铁牌和非金银铜条目会被过滤。
+当前数据以 `data/` 目录为准。奖项记录维护在 `data/awards.json`，World Finals 出线记录维护在 `data/wf.json`。
 
 每条记录只包含以下字段：
 
@@ -30,5 +24,14 @@ python tools/build_awards.py
   "members": ["李佳隆", "潘非", "熊师飏"],
   "award": "金",
   "rank": 11
+}
+```
+
+WF 出线记录格式：
+
+```json
+{
+  "season": "2025-2026",
+  "team": "秘封俱乐部"
 }
 ```

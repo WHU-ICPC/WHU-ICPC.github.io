@@ -150,7 +150,6 @@
     "members": [
       "陶赞宇",
       "徐嘉浩",
-      "罗岑",
       "金润禾"
     ],
     "award": "银",
@@ -183,10 +182,9 @@
   {
     "season": "2025-2026",
     "contest": "ICPC 沈阳",
-    "team": "鼠鼠我们在成都很想你",
+    "team": "轰炸机征友",
     "members": [
       "张子红",
-      "黄子君",
       "黄欣岚",
       "扶阳"
     ],
@@ -236,7 +234,6 @@
     "members": [
       "陶赞宇",
       "徐嘉浩",
-      "罗岑",
       "金润禾"
     ],
     "award": "金",
@@ -256,7 +253,7 @@
   },
   {
     "season": "2025-2026",
-    "contest": "ICPC EC Final 杭州",
+    "contest": "ICPC EC Final",
     "team": "秘封俱乐部",
     "members": [
       "李佳隆",
@@ -268,7 +265,7 @@
   },
   {
     "season": "2025-2026",
-    "contest": "ICPC EC Final 杭州",
+    "contest": "ICPC EC Final",
     "team": "很弱的低手",
     "members": [
       "罗汇翔",
@@ -280,11 +277,10 @@
   },
   {
     "season": "2025-2026",
-    "contest": "ICPC EC Final 杭州",
+    "contest": "ICPC EC Final",
     "team": "西柚柠檬气泡水",
     "members": [
       "陶赞宇",
-      "徐嘉浩",
       "罗岑",
       "金润禾"
     ],
@@ -382,7 +378,6 @@
     "members": [
       "陶赞宇",
       "徐嘉浩",
-      "罗岑",
       "金润禾"
     ],
     "award": "铜",
@@ -390,10 +385,9 @@
   },
   {
     "season": "2025-2026",
-    "contest": "CCPC 女生专场 成都",
+    "contest": "CCPC 女生赛",
     "team": "鼠鼠我们在成都很想你",
     "members": [
-      "张子红",
       "黄子君",
       "黄欣岚",
       "扶阳"
@@ -403,7 +397,7 @@
   },
   {
     "season": "2025-2026",
-    "contest": "CCPC 女生专场 成都",
+    "contest": "CCPC 女生赛",
     "team": "我们队真的很能吃，可以多给一份午餐吗？",
     "members": [
       "李书纬",
@@ -415,7 +409,7 @@
   },
   {
     "season": "2025-2026",
-    "contest": "CCPC 女生专场 成都",
+    "contest": "CCPC 女生赛",
     "team": "66大省",
     "members": [
       "孙忆琳",
@@ -427,7 +421,7 @@
   },
   {
     "season": "2025-2026",
-    "contest": "CCPC Final 南阳",
+    "contest": "CCPC Final",
     "team": "秘封俱乐部",
     "members": [
       "李佳隆",
@@ -439,7 +433,7 @@
   },
   {
     "season": "2025-2026",
-    "contest": "CCPC Final 南阳",
+    "contest": "CCPC Final",
     "team": "队名长度小于0",
     "members": [
       "胡文锦",
@@ -475,7 +469,7 @@
   },
   {
     "season": "2024-2025",
-    "contest": "CCPC 女生专场",
+    "contest": "CCPC 女生赛",
     "team": "鼠鼠我啊觉得你不对劲",
     "members": [
       "张子红",
@@ -775,7 +769,7 @@
   },
   {
     "season": "2023-2024",
-    "contest": "CCPC 女生专场",
+    "contest": "CCPC 女生赛",
     "team": "鼠鼠我啊奋发涂墙捏",
     "members": [
       "黄子君",
@@ -787,7 +781,7 @@
   },
   {
     "season": "2023-2024",
-    "contest": "CCPC 女生专场",
+    "contest": "CCPC 女生赛",
     "team": "关于重生之我是菜狗这件事",
     "members": [
       "李禾越",
@@ -799,7 +793,7 @@
   },
   {
     "season": "2023-2024",
-    "contest": "CCPC 女生专场",
+    "contest": "CCPC 女生赛",
     "team": "在岩浆里游泳",
     "members": [
       "莫雯琦",
@@ -1087,7 +1081,7 @@
   },
   {
     "season": "2023-2024",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "Still Alive",
     "members": [
       "吴飞洋",
@@ -1099,7 +1093,7 @@
   },
   {
     "season": "2023-2024",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "旺旺碎冰冰",
     "members": [
       "谷嘉良",
@@ -1111,7 +1105,7 @@
   },
   {
     "season": "2023-2024",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "放学后茶会",
     "members": [
       "张弛",
@@ -1315,7 +1309,7 @@
   },
   {
     "season": "2022-2023",
-    "contest": "CCPC 女生专场",
+    "contest": "CCPC 女生赛",
     "team": "鼠鼠来啰(here comes shushu)",
     "members": [
       "陈佳楹",
@@ -1327,7 +1321,7 @@
   },
   {
     "season": "2022-2023",
-    "contest": "CCPC 女生专场",
+    "contest": "CCPC 女生赛",
     "team": "关于重生之我是菜狗这件事(three trash want a medal)",
     "members": [
       "李禾越",
@@ -1423,7 +1417,7 @@
   },
   {
     "season": "2022-2023",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "mikumikumi(watashihamikudesu)",
     "members": [
       "杨宇轩",
@@ -1435,7 +1429,7 @@
   },
   {
     "season": "2022-2023",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "樱大轻音部(Sakura University Light Music Club)",
     "members": [
       "吴飞洋",
@@ -1447,7 +1441,7 @@
   },
   {
     "season": "2022-2023",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "背对背拥抱(Fugitive)",
     "members": [
       "徐嘉浩",
@@ -1459,7 +1453,7 @@
   },
   {
     "season": "2022-2023",
-    "contest": "CCPC Final 广州",
+    "contest": "CCPC Final",
     "team": "删点引猹(tree pm drink tea)",
     "members": [
       "侯哲",
@@ -1747,7 +1741,7 @@
   },
   {
     "season": "2021-2022",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "菜就多练(practice make vegetable)",
     "members": [
       "侯哲",
@@ -1759,7 +1753,7 @@
   },
   {
     "season": "2021-2022",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "星空暗流(Chaotic Star)",
     "members": [
       "朱少本",
@@ -1771,7 +1765,7 @@
   },
   {
     "season": "2021-2022",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "要迟到了(04:59:59)",
     "members": [
       "王骏峣",
@@ -1783,7 +1777,7 @@
   },
   {
     "season": "2021-2022",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "B304不需要爱情",
     "members": [
       "吴飞洋",
@@ -1903,7 +1897,7 @@
   },
   {
     "season": "2020-2021",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "旭旭哲哲聪聪",
     "members": [
       "蒋梦旭",
@@ -1915,7 +1909,7 @@
   },
   {
     "season": "2020-2021",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "啊啊啊啊诶",
     "members": [
       "岳志澄",
@@ -1927,7 +1921,7 @@
   },
   {
     "season": "2020-2021",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "武钢生产大队",
     "members": [
       "吴轲",
@@ -2131,7 +2125,7 @@
   },
   {
     "season": "2019-2020",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "珞珈山老演员",
     "members": [
       "陈欣予",
@@ -2143,7 +2137,7 @@
   },
   {
     "season": "2019-2020",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "能吃能睡带得动",
     "members": [
       "林朝洋",
@@ -2155,7 +2149,7 @@
   },
   {
     "season": "2019-2020",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "出来对线",
     "members": [
       "蒋梦旭",
@@ -2203,7 +2197,7 @@
   },
   {
     "season": "2019-2020",
-    "contest": "CCPC Final 北京",
+    "contest": "CCPC Final",
     "team": "能吃能睡带得动",
     "members": [
       "林朝洋",
@@ -2371,7 +2365,7 @@
   },
   {
     "season": "2018-2019",
-    "contest": "ICPC EC Final 西安",
+    "contest": "ICPC EC Final",
     "team": "我能摸摸你的奖杯吗",
     "members": [
       "刘沛良",
@@ -2407,7 +2401,7 @@
   },
   {
     "season": "2018-2019",
-    "contest": "CCPC Final 深圳",
+    "contest": "CCPC Final",
     "team": "我才不要这个队名呢",
     "members": [
       "郭松",
@@ -2623,7 +2617,7 @@
   },
   {
     "season": "2017-2018",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "丝滑拿铁",
     "members": [
       "魏子敬",
@@ -2635,7 +2629,7 @@
   },
   {
     "season": "2017-2018",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "没睡醒",
     "members": [
       "曹彬",
@@ -2647,7 +2641,7 @@
   },
   {
     "season": "2017-2018",
-    "contest": "ICPC EC Final 上海",
+    "contest": "ICPC EC Final",
     "team": "Mogic",
     "members": [
       "甄牧放",
@@ -2671,7 +2665,7 @@
   },
   {
     "season": "2017-2018",
-    "contest": "CCPC Final 哈尔滨",
+    "contest": "CCPC Final",
     "team": "丝滑拿铁",
     "members": [
       "曹斌",
@@ -2683,7 +2677,7 @@
   },
   {
     "season": "2017-2018",
-    "contest": "CCPC Final 哈尔滨",
+    "contest": "CCPC Final",
     "team": "听歌喝茶队",
     "members": [
       "郭宇梁",

@@ -1,17 +1,21 @@
 :root {
   color-scheme: light;
-  --paper: #fff;
   --surface: #fff;
-  --ink: #151515;
-  --muted: #6d6b66;
-  --line: #d8d6cf;
-  --line-soft: #e7e5df;
-  --gold: #826514;
-  --silver: #65717a;
-  --bronze: #8a4f32;
-  --page-padding: clamp(1.25rem, 4vw, 4.5rem);
-  --team-width: 15rem;
-  --member-width: 13rem;
+  --ink: rgb(0 0 0 / 87%);
+  --muted: rgb(0 0 0 / 58%);
+  --faint: rgb(0 0 0 / 38%);
+  --line: rgb(0 0 0 / 12%);
+  --line-strong: rgb(0 0 0 / 20%);
+  --hover: rgb(0 0 0 / 3%);
+  --primary: #4051b5;
+  --accent: #ffd54f;
+  --gold: #8a6900;
+  --silver: #596870;
+  --bronze: #8d4d2d;
+  --page-padding: clamp(1rem, 5vw, 5rem);
+  --content-width: 90rem;
+  --team-width: 10.5rem;
+  --member-width: 13.5rem;
 }
 
 * {
@@ -25,11 +29,13 @@ html {
 body {
   margin: 0;
   overflow-x: hidden;
-  background: var(--paper);
+  background: var(--surface);
   color: var(--ink);
   font-family:
-    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    "Fira Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans SC",
+    "Microsoft YaHei", sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -38,85 +44,108 @@ summary {
   font: inherit;
 }
 
-button {
-  color: inherit;
-}
-
+button,
 a {
   color: inherit;
 }
 
 .site-header {
+  position: sticky;
+  z-index: 20;
+  top: 0;
   display: flex;
   align-items: center;
-  min-height: 7rem;
-  padding: 1.25rem var(--page-padding);
+  min-height: 3.5rem;
+  padding-inline: var(--page-padding);
   border-bottom: 1px solid var(--line);
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 0.1rem 0.25rem rgb(0 0 0 / 8%);
+  backdrop-filter: blur(0.5rem);
 }
 
 .brand {
   display: inline-flex;
-  gap: 0.9rem;
+  gap: 0.75rem;
   align-items: center;
   text-decoration: none;
 }
 
 .brand-logo {
-  width: 4.25rem;
-  height: 4.25rem;
+  width: 2.25rem;
+  height: 2.25rem;
   object-fit: contain;
 }
 
 .brand-name {
   margin: 0;
-  font-size: 1.05rem;
-  font-weight: 720;
-  letter-spacing: -0.02em;
+  font-size: 1.2rem;
+  font-weight: 500;
+  letter-spacing: 0;
 }
 
 main {
   width: 100%;
-  max-width: 100%;
+  max-width: var(--content-width);
+  margin-inline: auto;
   padding-inline: var(--page-padding);
 }
 
 .awards {
   min-width: 0;
-  padding-block: clamp(3rem, 7vw, 6rem) 7rem;
+  padding-block: clamp(2rem, 5vw, 4rem) 5rem;
 }
 
 .loading-status {
-  padding: 2rem 0;
+  padding: 1.25rem 0;
   color: var(--muted);
 }
 
-.loading-status:empty {
-  display: none;
-}
-
+.loading-status:empty,
 .loading-status[hidden] {
   display: none;
 }
 
 .season-list {
+  display: grid;
   min-width: 0;
-  border-top: 1px solid var(--ink);
+  gap: 0.85rem;
 }
 
 .season {
   min-width: 0;
-  border-bottom: 1px solid var(--line);
+  overflow: clip;
+  border: 1px solid #d4d4d5;
+  border-radius: 0.28571429rem;
+  background: var(--surface);
+  box-shadow: 0 1px 2px 0 rgb(34 36 38 / 8%);
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.season[open] {
+  border-color: #bcbdbd;
+  box-shadow: 0 2px 5px 0 rgb(34 36 38 / 12%);
 }
 
 .season > summary {
   display: grid;
-  grid-template-columns: minmax(12rem, 1fr) auto auto;
-  gap: clamp(1.5rem, 5vw, 5rem);
+  grid-template-columns: minmax(10rem, 1fr) auto 1.75rem;
+  gap: clamp(1rem, 3vw, 2.5rem);
   align-items: center;
-  min-height: 7.25rem;
-  padding-block: 1.25rem;
+  min-height: 4.5rem;
+  padding: 0.75rem 1.25rem;
   cursor: pointer;
   list-style: none;
+  transition: background-color 150ms ease;
+}
+
+.season > summary:hover {
+  background: var(--hover);
+}
+
+.season[open] > summary {
+  border-bottom: 1px solid rgb(34 36 38 / 15%);
 }
 
 .season > summary::-webkit-details-marker {
@@ -126,8 +155,8 @@ main {
 .season > summary:focus-visible,
 .person-button:focus-visible,
 .dialog-close:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 4px;
+  outline: 0.15rem solid var(--primary);
+  outline-offset: -0.15rem;
 }
 
 .season-title {
@@ -136,29 +165,79 @@ main {
 }
 
 .season-years {
-  font-size: clamp(1.65rem, 3.4vw, 3.2rem);
-  font-weight: 540;
-  letter-spacing: -0.055em;
+  color: var(--ink);
+  font-family: "Fira Mono", "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.015em;
 }
 
 .medal-counts {
-  display: flex;
-  gap: clamp(1rem, 3vw, 2.25rem);
+  display: grid;
+  grid-template-columns: 2.5rem repeat(3, 3.75rem);
+  gap: 0.8rem;
   align-items: center;
+  justify-self: end;
+}
+
+.wf-badge {
+  display: inline-block;
+  background: linear-gradient(
+    90deg,
+    #e53935 0%,
+    #fb8c00 18%,
+    #f9a825 34%,
+    #43a047 50%,
+    #1e88e5 68%,
+    #5e35b1 84%,
+    #d81b60 100%
+  );
+  background-clip: text;
+  color: #5e35b1;
+  font-family: "Fira Sans", "Segoe UI", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.wf-season-badge,
+.wf-season-placeholder {
+  width: 2.5rem;
+  font-size: 1.15rem;
+  text-align: center;
+}
+
+.wf-season-placeholder {
+  visibility: hidden;
+}
+
+.wf-team-badge {
+  margin-right: 0.5rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .medal-count {
   display: inline-flex;
   gap: 0.45rem;
   align-items: baseline;
-  font-size: 0.8rem;
+  font-size: 1rem;
   white-space: nowrap;
 }
 
+.medal-count > span {
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
 .medal-count strong {
-  font-size: 1.1rem;
-  font-weight: 570;
+  width: 2ch;
+  font-size: 1.4rem;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
+  text-align: right;
 }
 
 .medal-gold {
@@ -175,36 +254,32 @@ main {
 
 .season-toggle {
   position: relative;
-  display: grid;
-  width: 2.25rem;
-  height: 2.25rem;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 50%;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--muted);
 }
 
-.season-toggle::before,
-.season-toggle::after {
+.season-toggle::before {
   position: absolute;
-  width: 0.7rem;
-  height: 1px;
-  background: currentColor;
+  top: 0.45rem;
+  left: 0.5rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 0.12rem solid currentColor;
+  border-bottom: 0.12rem solid currentColor;
   content: "";
-  transition: transform 180ms ease;
+  transform: rotate(45deg);
+  transition: transform 150ms ease;
 }
 
-.season-toggle::after {
-  transform: rotate(90deg);
-}
-
-.season[open] .season-toggle::after {
-  transform: rotate(0deg);
+.season[open] .season-toggle::before {
+  transform: translateY(0.25rem) rotate(225deg);
 }
 
 .season-content {
   min-width: 0;
   max-width: 100%;
-  padding: 0 0 3rem;
+  padding: 0.4rem 1.25rem 1.2rem;
 }
 
 .season-table-wrap {
@@ -212,6 +287,7 @@ main {
   max-width: 100%;
   overflow-x: auto;
   overscroll-behavior-inline: contain;
+  scrollbar-color: var(--line-strong) transparent;
   scrollbar-width: thin;
 }
 
@@ -219,30 +295,37 @@ main {
   width: 100%;
   min-width: max-content;
   border-collapse: collapse;
-  font-size: 0.82rem;
+  font-size: 1rem;
 }
 
 .season-table th,
 .season-table td {
-  padding: 1rem 0.85rem;
+  padding: 0.75rem 0.5rem;
   text-align: left;
   vertical-align: top;
 }
 
+.season-table thead {
+  border-bottom: 0.12rem solid var(--line-strong);
+}
+
 .season-table thead th {
   color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 620;
-  letter-spacing: 0.04em;
-  line-height: 1.45;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.4;
 }
 
 .season-table tbody tr {
-  border-top: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.season-table tbody tr:last-child {
+  border-bottom: 0;
 }
 
 .season-table tbody tr:hover {
-  background: rgb(0 0 0 / 0.018);
+  background: rgb(64 81 181 / 4%);
 }
 
 .season-table .team-heading,
@@ -260,18 +343,19 @@ main {
 
 .contest-heading,
 .result-cell {
-  width: 8rem;
-  min-width: 8rem;
+  width: 7rem;
+  min-width: 7rem;
 }
 
 .team-cell {
   max-width: var(--team-width);
-  font-weight: 570;
+  font-weight: 500;
   line-height: 1.55;
 }
 
 .member-cell {
-  line-height: 1.75;
+  line-height: 1.7;
+  white-space: nowrap;
 }
 
 .person-button {
@@ -279,17 +363,18 @@ main {
   padding: 0;
   border: 0;
   background: none;
+  color: var(--primary);
   cursor: pointer;
 }
 
 .person-button:hover {
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-underline-offset: 0.25em;
+  text-underline-offset: 0.2em;
 }
 
 .member-separator {
-  color: var(--line);
+  color: var(--faint);
 }
 
 .result-cell {
@@ -298,63 +383,77 @@ main {
 
 .result {
   display: block;
-  margin-bottom: 0.25rem;
-  font-weight: 620;
+  margin-bottom: 0.2rem;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
 
 .result-rank {
   color: var(--muted);
-  font-weight: 460;
+  font-weight: 400;
 }
 
 .person-dialog {
   width: min(68rem, calc(100vw - 2rem));
   max-height: min(48rem, calc(100vh - 2rem));
   padding: 0;
-  border: 0;
-  background: transparent;
+  overflow: hidden;
+  border: 1px solid #d4d4d5;
+  border-radius: 0.28571429rem;
+  background: var(--surface);
   color: var(--ink);
+  box-shadow: 0 3px 10px 2px rgb(34 36 38 / 18%);
 }
 
 .person-dialog::backdrop {
-  background: rgb(15 15 15 / 0.5);
-  backdrop-filter: blur(3px);
+  background: rgb(255 255 255 / 84%);
+  backdrop-filter: blur(2px);
 }
 
 .dialog-shell {
   position: relative;
   max-height: min(48rem, calc(100vh - 2rem));
   overflow: auto;
-  padding: clamp(1.5rem, 4vw, 4rem);
   background: var(--surface);
 }
 
 .dialog-close {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  padding: 0.45rem 0;
+  z-index: 1;
+  top: 0.75rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
   border: 0;
-  border-bottom: 1px solid currentColor;
-  background: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 1.8rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.dialog-close:hover {
+  background: rgb(0 0 0 / 5%);
 }
 
 .dialog-header {
-  padding-right: 4rem;
+  padding: 1.15rem 4.5rem 1.15rem 1.5rem;
+  border-bottom: 1px solid rgb(34 36 38 / 15%);
 }
 
 .dialog-header h2 {
   margin: 0;
-  font-size: clamp(2rem, 5vw, 4.5rem);
-  font-weight: 620;
-  letter-spacing: -0.055em;
+  color: var(--ink);
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: 0;
 }
 
 .person-records-wrap {
-  margin-top: 3rem;
+  padding: 1.25rem 1.5rem 1.5rem;
   overflow-x: auto;
 }
 
@@ -362,22 +461,41 @@ main {
   width: 100%;
   min-width: 42rem;
   border-collapse: collapse;
-  font-size: 0.82rem;
+  font-size: 1rem;
 }
 
 .person-records th,
 .person-records td {
-  padding: 1rem 1.25rem 1rem 0;
-  border-top: 1px solid var(--line-soft);
+  padding: 0.8rem 0.75rem;
+  border-bottom: 1px solid rgb(34 36 38 / 10%);
   text-align: left;
   vertical-align: top;
 }
 
+.person-records thead {
+  border-bottom: 1px solid rgb(34 36 38 / 15%);
+}
+
 .person-records th {
-  color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 620;
-  letter-spacing: 0.04em;
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.person-records th:nth-child(1) {
+  width: 22%;
+}
+
+.person-records th:nth-child(2) {
+  width: 36%;
+}
+
+.person-records th:nth-child(3) {
+  width: 28%;
+}
+
+.person-records th:nth-child(4) {
+  width: 14%;
 }
 
 .person-records td:first-child {
@@ -389,29 +507,43 @@ body:has(.person-dialog[open]) {
 }
 
 @media (max-width: 760px) {
+  :root {
+    --page-padding: 1rem;
+  }
+
   .site-header {
-    min-height: 5.5rem;
+    min-height: 3.25rem;
   }
 
   .brand-logo {
-    width: 3.25rem;
-    height: 3.25rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .season-list {
+    gap: 0.75rem;
   }
 
   .season > summary {
     grid-template-columns: 1fr auto;
-    gap: 1.25rem;
-    min-height: 8.5rem;
+    gap: 0.75rem;
+    min-height: 5.5rem;
+    padding: 0.75rem 0.9rem;
   }
 
   .medal-counts {
     grid-column: 1 / -1;
     grid-row: 2;
+    justify-self: start;
   }
 
   .season-toggle {
     grid-column: 2;
     grid-row: 1;
+  }
+
+  .season-content {
+    padding-inline: 0.9rem;
   }
 }
 
@@ -420,8 +552,9 @@ body:has(.person-dialog[open]) {
     scroll-behavior: auto;
   }
 
-  .season-toggle::before,
-  .season-toggle::after {
+  .season,
+  .season > summary,
+  .season-toggle::before {
     transition: none;
   }
 }
