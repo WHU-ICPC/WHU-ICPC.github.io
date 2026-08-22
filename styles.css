@@ -364,7 +364,7 @@ main {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--primary);
+  color: #000000;
   cursor: pointer;
 }
 
