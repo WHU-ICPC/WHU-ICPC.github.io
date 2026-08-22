@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="武汉大学 ACM-ICPC 协会历赛季金、银、铜奖项记录。"
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <title>WHU ACM-ICPC</title>
+    <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=1" />
+    <script src="script.js?v=1" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="WHU ACM-ICPC 首页">
+        <img class="brand-logo" src="assets/logo.svg" alt="" />
+        <h1 class="brand-name">WHU ACM-ICPC</h1>
+      </a>
+    </header>
+
+    <main>
+      <section class="awards" aria-label="赛季荣誉">
+        <div id="loading-status" class="loading-status" role="status"></div>
+        <div id="season-list" class="season-list"></div>
+      </section>
+    </main>
+
+    <dialog id="person-dialog" class="person-dialog" aria-labelledby="person-name">
+      <div class="dialog-shell">
+        <button class="dialog-close" type="button" aria-label="关闭个人记录">关闭</button>
+        <header class="dialog-header">
+          <h2 id="person-name"></h2>
+        </header>
+        <div class="person-records-wrap">
+          <table class="person-records">
+            <thead>
+              <tr>
+                <th scope="col">赛季</th>
+                <th scope="col">队伍</th>
+                <th scope="col">比赛</th>
+                <th scope="col">成绩</th>
+              </tr>
+            </thead>
+            <tbody id="person-records-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </dialog>
+  </body>
+</html>
