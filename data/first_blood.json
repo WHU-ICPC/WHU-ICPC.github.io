@@ -24,6 +24,22 @@
     "textColor": "#fff"
   },
   {
+    "season": "2023-2024",
+    "contest": "ICPC 南京",
+    "team": "褪色记忆",
+    "problem": "G",
+    "color": "#000000",
+    "textColor": "#FFFFFF"
+  },
+  {
+    "season": "2024-2025",
+    "contest": "ICPC 南京",
+    "team": "真就两个人",
+    "problem": "E",
+    "color": "#FF0000",
+    "textColor": "#FFFFFF"
+  },
+  {
     "season": "2025-2026",
     "contest": "ICPC 南京",
     "team": "很弱的低手",
