@@ -15,16 +15,55 @@
   </head>
   <body>
     <header class="site-header">
+      <button
+        id="menu-toggle"
+        class="menu-toggle"
+        type="button"
+        aria-label="打开菜单"
+        aria-controls="site-sidebar"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <a class="brand" href="./" aria-label="WHU ACM-ICPC 首页">
         <img class="brand-logo" src="assets/logo.svg" alt="" />
         <h1 class="brand-name">WHU ACM-ICPC</h1>
       </a>
+      <span id="page-title" class="page-title">奖牌陈列室</span>
     </header>
 
-    <main>
-      <section class="awards" aria-label="赛季荣誉">
+    <aside id="site-sidebar" class="site-sidebar" aria-label="网站菜单" aria-hidden="true">
+      <div class="sidebar-header">
+        <span class="sidebar-heading">菜单</span>
+        <button id="menu-close" class="menu-close" type="button" aria-label="关闭菜单">×</button>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="sidebar-link" data-page="medals" href="#medals">奖牌陈列室</a>
+        <div class="sidebar-folder">
+          <button class="sidebar-folder-toggle" type="button" aria-expanded="false">
+            <span class="folder-chevron" aria-hidden="true"></span>
+            <span>往届活动存档</span>
+          </button>
+          <div id="board-tree" class="board-tree" hidden></div>
+        </div>
+      </nav>
+    </aside>
+    <button id="sidebar-backdrop" class="sidebar-backdrop" type="button" aria-label="关闭菜单" hidden></button>
+
+    <main id="app-main">
+      <section id="awards-page" class="awards" aria-label="赛季荣誉">
         <div id="loading-status" class="loading-status" role="status"></div>
         <div id="season-list" class="season-list"></div>
+      </section>
+      <section id="board-page" class="board-page" aria-label="比赛榜单" hidden>
+        <div class="board-page-header">
+          <a class="back-link" href="#medals">‹ 返回奖牌陈列室</a>
+        </div>
+        <div class="board-frame-wrap">
+          <iframe id="board-frame" class="board-frame" title="比赛榜单"></iframe>
+        </div>
       </section>
     </main>
 

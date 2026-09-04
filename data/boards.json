@@ -1,0 +1,19 @@
+[
+  {
+    "title": "2026暑假集训",
+    "children": [
+      {
+        "title": "round4-横滨大奖赛",
+        "path": "boards/2026暑假集训/round4-横滨大奖赛/index.html"
+      },
+      {
+        "title": "round5-德黑兰大奖赛",
+        "path": "boards/2026暑假集训/round5-德黑兰大奖赛/index.html"
+      },
+      {
+        "title": "round6-西北欧大奖赛",
+        "path": "boards/2026暑假集训/round6-西北欧大奖赛/index.html"
+      }
+    ]
+  }
+]

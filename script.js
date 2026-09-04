@@ -15,10 +15,22 @@ const personRecordsBody = document.querySelector("#person-records-body");
 const contestDialog = document.querySelector("#contest-dialog");
 const contestName = document.querySelector("#contest-name");
 const contestRecordsBody = document.querySelector("#contest-records-body");
+const menuToggle = document.querySelector("#menu-toggle");
+const menuClose = document.querySelector("#menu-close");
+const siteSidebar = document.querySelector("#site-sidebar");
+const sidebarBackdrop = document.querySelector("#sidebar-backdrop");
+const sidebarFolderToggle = document.querySelector(".sidebar-folder-toggle");
+const boardTree = document.querySelector("#board-tree");
+const pageTitle = document.querySelector("#page-title");
+const awardsPage = document.querySelector("#awards-page");
+const boardPage = document.querySelector("#board-page");
+const boardFrame = document.querySelector("#board-frame");
 
 let records = [];
 let wfQualifications = [];
 let firstBloodIndex = new Map();
+let boardTreeData = [];
+let activeBoardPath = "";
 
 function createElement(tag, className, text) {
   const element = document.createElement(tag);
@@ -91,6 +103,25 @@ function validateFirstBlood(data) {
   });
 }
 
+function validateBoards(data) {
+  if (!Array.isArray(data)) throw new Error("活动存档数据不是数组");
+
+  function validateNodes(nodes) {
+    return nodes.map((node) => {
+      if (!node.title || (!node.path && !Array.isArray(node.children))) {
+        throw new Error("发现格式不正确的活动存档记录");
+      }
+      if (node.children) {
+        if (!Array.isArray(node.children)) throw new Error("活动存档目录格式不正确");
+        node.children = validateNodes(node.children);
+      }
+      return node;
+    });
+  }
+
+  return validateNodes(data);
+}
+
 function recordKey(record) {
   return JSON.stringify([record.season, record.contest, record.team]);
 }
@@ -103,6 +134,77 @@ function indexFirstBlood(items) {
     index.get(key).push(item);
   }
   return index;
+}
+
+function boardNodeByPath(nodes, path) {
+  for (const node of nodes) {
+    if (node.path === path) return node;
+    if (node.children) {
+      const found = boardNodeByPath(node.children, path);
+      if (found) return found;
+    }
+  }
+  return null;
+}
+
+function renderBoardTree(nodes, parent) {
+  for (const node of nodes) {
+    if (node.children) {
+      const folder = createElement("details", "board-folder");
+      const summary = createElement("summary", "board-folder-summary", node.title);
+      const children = createElement("div", "board-folder-children");
+      folder.append(summary, children);
+      parent.append(folder);
+      renderBoardTree(node.children, children);
+      continue;
+    }
+
+    const link = createElement("a", "board-link", node.title);
+    link.href = `#board=${encodeURIComponent(node.path)}`;
+    link.dataset.boardPath = node.path;
+    parent.append(link);
+  }
+}
+
+function renderBoardMenu() {
+  boardTree.replaceChildren();
+  renderBoardTree(boardTreeData, boardTree);
+}
+
+function setMenuOpen(open) {
+  siteSidebar.classList.toggle("is-open", open);
+  sidebarBackdrop.hidden = !open;
+  siteSidebar.setAttribute("aria-hidden", String(!open));
+  menuToggle.setAttribute("aria-expanded", String(open));
+  menuToggle.setAttribute("aria-label", open ? "关闭菜单" : "打开菜单");
+  document.body.classList.toggle("menu-open", open);
+}
+
+function renderPage() {
+  const hash = window.location.hash;
+  const boardMatch = hash.match(/^#board=(.*)$/);
+  const boardPath = boardMatch ? decodeURIComponent(boardMatch[1]) : "";
+  const board = boardPath ? boardNodeByPath(boardTreeData, boardPath) : null;
+
+  if (board) {
+    activeBoardPath = board.path;
+    awardsPage.hidden = true;
+    boardPage.hidden = false;
+    boardFrame.src = board.path;
+    boardFrame.title = board.title;
+    pageTitle.textContent = board.title;
+    document.title = `${board.title} · WHU ACM-ICPC`;
+  } else {
+    activeBoardPath = "";
+    awardsPage.hidden = false;
+    boardPage.hidden = true;
+    pageTitle.textContent = "奖牌陈列室";
+    document.title = "奖牌陈列室 · WHU ACM-ICPC";
+  }
+
+  for (const link of boardTree.querySelectorAll("[data-board-path]")) {
+    link.classList.toggle("is-active", link.dataset.boardPath === activeBoardPath);
+  }
 }
 
 function wfBadge(className = "") {
@@ -293,6 +395,7 @@ function renderSeasons() {
   }
 
   const seasons = [...grouped.keys()].sort((left, right) => seasonStart(right) - seasonStart(left));
+  seasonList.replaceChildren();
   seasons.forEach((season, index) => {
     seasonList.append(renderSeason(season, grouped.get(season), index));
   });
@@ -360,6 +463,24 @@ document.addEventListener("click", (event) => {
   if (person) showPerson(person.dataset.person);
 });
 
+menuToggle.addEventListener("click", () => setMenuOpen(!siteSidebar.classList.contains("is-open")));
+menuClose.addEventListener("click", () => setMenuOpen(false));
+sidebarBackdrop.addEventListener("click", () => setMenuOpen(false));
+sidebarFolderToggle.addEventListener("click", () => {
+  const expanded = sidebarFolderToggle.getAttribute("aria-expanded") === "true";
+  sidebarFolderToggle.setAttribute("aria-expanded", String(!expanded));
+  boardTree.hidden = expanded;
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && siteSidebar.classList.contains("is-open")) {
+    setMenuOpen(false);
+  }
+});
+window.addEventListener("hashchange", () => {
+  renderPage();
+  setMenuOpen(false);
+});
+
 for (const recordDialog of [personDialog, contestDialog]) {
   const shell = recordDialog.querySelector(".dialog-shell");
   const close = recordDialog.querySelector(".dialog-close");
@@ -381,12 +502,16 @@ Promise.all([
   fetchJson("data/awards.json"),
   fetchJson("data/wf.json"),
   fetchJson("data/first_blood.json"),
+  fetchJson("data/boards.json"),
 ])
-  .then(([awardData, wfData, firstBloodData]) => {
+  .then(([awardData, wfData, firstBloodData, boardsData]) => {
     records = validateRecords(awardData);
     wfQualifications = validateWfQualifications(wfData);
     firstBloodIndex = indexFirstBlood(validateFirstBlood(firstBloodData));
+    boardTreeData = validateBoards(boardsData);
+    renderBoardMenu();
     renderSeasons();
+    renderPage();
     loadingStatus.hidden = true;
   })
   .catch((error) => {

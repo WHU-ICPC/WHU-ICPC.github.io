@@ -35,3 +35,12 @@ WF 出线记录格式：
   "team": "秘封俱乐部"
 }
 ```
+
+往届活动榜单的目录索引维护在 `data/boards.json`，每个叶节点的 `path` 指向 `boards/` 下对应的 Domjudge `index.html`：
+
+```json
+{
+  "title": "round4-横滨大奖赛",
+  "path": "boards/2026暑假集训/round4-横滨大奖赛/index.html"
+}
+```
