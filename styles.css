@@ -266,7 +266,7 @@ a {
 }
 
 .board-link {
-  color: var(--primary);
+  color: var(--ink);
   font-size: 0.94rem;
 }
 

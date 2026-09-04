@@ -3,17 +3,33 @@
     "title": "2026暑假集训",
     "children": [
       {
+        "title": "round1-拉美大奖赛",
+        "path": "boards/2026暑假集训/round1/index.html"
+      },
+      {
+        "title": "round2-雅加达大奖赛",
+        "path": "boards/2026暑假集训/round2/index.html"
+      },
+      {
+        "title": "round3-落基山大奖赛",
+        "path": "boards/2026暑假集训/round3/index.html"
+      },
+      {
         "title": "round4-横滨大奖赛",
-        "path": "boards/2026暑假集训/round4-横滨大奖赛/index.html"
+        "path": "boards/2026暑假集训/round4/index.html"
       },
       {
         "title": "round5-德黑兰大奖赛",
-        "path": "boards/2026暑假集训/round5-德黑兰大奖赛/index.html"
+        "path": "boards/2026暑假集训/round5/index.html"
       },
       {
         "title": "round6-西北欧大奖赛",
-        "path": "boards/2026暑假集训/round6-西北欧大奖赛/index.html"
+        "path": "boards/2026暑假集训/round6/index.html"
       }
     ]
+  },
+  {
+    "title": "2025新生赛",
+    "path": "boards/2025新生赛/index.html"
   }
 ]
