@@ -147,6 +147,13 @@ function boardNodeByPath(nodes, path) {
   return null;
 }
 
+function boardFormat(path) {
+  const extension = path.split(/[?#]/, 1)[0].split(".").pop().toLowerCase();
+  if (extension === "pdf") return "pdf";
+  if (extension === "mhtml" || extension === "mht") return "mhtml";
+  return "html";
+}
+
 function renderBoardTree(nodes, parent) {
   for (const node of nodes) {
     if (node.children) {
@@ -187,14 +194,20 @@ function renderPage() {
   const board = boardPath ? boardNodeByPath(boardTreeData, boardPath) : null;
 
   if (board) {
+    const format = board.format || boardFormat(board.path);
     activeBoardPath = board.path;
     awardsPage.hidden = true;
     boardPage.hidden = false;
-    boardFrame.src = board.path;
+    boardFrame.dataset.format = format;
+    if (boardFrame.getAttribute("src") !== board.path) boardFrame.src = board.path;
     boardFrame.title = board.title;
     pageTitle.textContent = board.title;
     document.title = `${board.title} · WHU ACM-ICPC`;
   } else {
+    if (activeBoardPath) {
+      boardFrame.removeAttribute("src");
+      delete boardFrame.dataset.format;
+    }
     activeBoardPath = "";
     awardsPage.hidden = false;
     boardPage.hidden = true;

@@ -31,5 +31,9 @@
   {
     "title": "2025新生赛",
     "path": "boards/2025新生赛/index.html"
+  },
+  {
+    "title": "2024新生赛",
+    "path": "boards/2024新生赛/index.html"
   }
 ]
