@@ -202,6 +202,7 @@ a {
 }
 
 .sidebar-link:hover,
+.sidebar-link.is-active,
 .sidebar-folder-toggle:hover,
 .board-folder-summary:hover,
 .board-link:hover,

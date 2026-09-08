@@ -1,20 +1,43 @@
-# WHU ACM-ICPC Awards
+# WHU ACM-ICPC
 
-武汉大学 ACM-ICPC 协会的静态奖项展示页。页面无需构建工具，可直接部署到 GitHub Pages。
+武汉大学 ACM-ICPC 协会的静态展示网站，可直接部署至 GitHub Pages，无需构建工具或后端服务。
+
+网站包含以下内容：
+
+- **奖牌陈列室**：按赛季汇总队伍在 ICPC、CCPC 等赛事中的获奖记录；支持查看队员个人记录和单场赛事记录。
+- **World Finals 标记**：在对应赛季和队伍旁显示 WF 出线标识。
+- **一血标记**：在奖项记录中展示指定题目的一血气球。
+- **社团与竞赛简介**：在站内嵌入展示协会简介 PDF。
+- **往届活动存档**：以目录树展示历届赛事榜单、通知、积分方案等 HTML、PDF 或 MHTML 文件。
 
 ## 本地预览
+
+在仓库根目录启动本地静态服务器：
 
 ```powershell
 python -m http.server 8000
 ```
 
-打开 `http://localhost:8000`。由于页面通过 `fetch` 读取数据，不能直接双击 `index.html` 预览。
+然后打开 `http://localhost:8000`。页面会通过 `fetch` 读取 `data/` 下的 JSON 文件，因此不能直接双击 `index.html` 预览。
 
-## 更新数据
+## 目录说明
 
-当前数据以 `data/` 目录为准。奖项记录维护在 `data/awards.json`，World Finals 出线记录维护在 `data/wf.json`。
+```text
+assets/              网站图标等静态资源
+boards/              社团简介和往届活动的 HTML、PDF、MHTML 等展示文件
+data/                页面使用的 JSON 数据
+index.html           页面结构
+script.js            页面交互与数据渲染逻辑
+styles.css           页面样式
+```
 
-每条记录只包含以下字段：
+## 维护数据
+
+所有 JSON 文件必须为有效 JSON，使用 UTF-8 编码，并保持字段名称不变。
+
+### 奖项记录
+
+奖项数据维护在 `data/awards.json`。每条记录包含赛季、赛事、队伍、队员、奖项和名次：
 
 ```json
 {
@@ -27,7 +50,11 @@ python -m http.server 8000
 }
 ```
 
-WF 出线记录格式：
+`award` 只能是 `金`、`银` 或 `铜`；没有可用名次时将 `rank` 设为 `null`。
+
+### World Finals 出线记录
+
+出线记录维护在 `data/wf.json`：
 
 ```json
 {
@@ -36,11 +63,43 @@ WF 出线记录格式：
 }
 ```
 
-往届活动榜单的目录索引维护在 `data/boards.json`，每个叶节点的 `path` 指向 `boards/` 下对应的 Domjudge `index.html`：
+### 一血记录
+
+一血记录维护在 `data/first_blood.json`，并通过赛季、赛事和队伍与奖项记录对应：
 
 ```json
 {
-  "title": "round4-横滨大奖赛",
-  "path": "boards/2026暑假集训/round4-横滨大奖赛/index.html"
+  "season": "2025-2026",
+  "contest": "ICPC 南京",
+  "team": "很弱的低手",
+  "problem": "C",
+  "color": "#008000",
+  "textColor": "#000000"
 }
 ```
+
+### 往届活动存档
+
+活动目录维护在 `data/boards.json`。叶节点的 `path` 指向仓库中 `boards/` 下的文件；可指向 HTML、PDF 或 MHTML。带 `children` 的节点会显示为可展开目录。
+
+```json
+{
+  "title": "2026暑假集训",
+  "children": [
+    {
+      "title": "暑假集训通知",
+      "path": "boards/2026暑假集训/暑假集训通知.pdf"
+    },
+    {
+      "title": "round1-拉美大奖赛",
+      "path": "boards/2026暑假集训/round1/index.html"
+    }
+  ]
+}
+```
+
+新增文件时，请先将文件放入合适的 `boards/` 子目录，再在 `data/boards.json` 中添加对应的叶节点。
+
+## 更新社团简介
+
+站内“社团与竞赛简介”入口固定展示 `boards/社团与竞赛简介.pdf`。替换简介时请使用同名 PDF 覆盖该文件，以保持链接不变。

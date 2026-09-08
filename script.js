@@ -25,6 +25,8 @@ const pageTitle = document.querySelector("#page-title");
 const awardsPage = document.querySelector("#awards-page");
 const boardPage = document.querySelector("#board-page");
 const boardFrame = document.querySelector("#board-frame");
+const introductionPath = "boards/社团与竞赛简介.pdf";
+const introductionTitle = "社团与竞赛简介";
 
 let records = [];
 let wfQualifications = [];
@@ -192,17 +194,20 @@ function renderPage() {
   const boardMatch = hash.match(/^#board=(.*)$/);
   const boardPath = boardMatch ? decodeURIComponent(boardMatch[1]) : "";
   const board = boardPath ? boardNodeByPath(boardTreeData, boardPath) : null;
+  const isIntroduction = hash === "#introduction";
 
-  if (board) {
-    const format = board.format || boardFormat(board.path);
-    activeBoardPath = board.path;
+  if (board || isIntroduction) {
+    const path = board ? board.path : introductionPath;
+    const title = board ? board.title : introductionTitle;
+    const format = board ? board.format || boardFormat(path) : "pdf";
+    activeBoardPath = board ? path : "";
     awardsPage.hidden = true;
     boardPage.hidden = false;
     boardFrame.dataset.format = format;
-    if (boardFrame.getAttribute("src") !== board.path) boardFrame.src = board.path;
-    boardFrame.title = board.title;
-    pageTitle.textContent = board.title;
-    document.title = `${board.title} · WHU ACM-ICPC`;
+    if (boardFrame.getAttribute("src") !== path) boardFrame.src = path;
+    boardFrame.title = title;
+    pageTitle.textContent = title;
+    document.title = `${title} · WHU ACM-ICPC`;
   } else {
     if (activeBoardPath) {
       boardFrame.removeAttribute("src");
@@ -217,6 +222,13 @@ function renderPage() {
 
   for (const link of boardTree.querySelectorAll("[data-board-path]")) {
     link.classList.toggle("is-active", link.dataset.boardPath === activeBoardPath);
+  }
+  for (const link of document.querySelectorAll("[data-page]")) {
+    link.classList.toggle(
+      "is-active",
+      (link.dataset.page === "medals" && !board && !isIntroduction) ||
+        (link.dataset.page === "introduction" && isIntroduction),
+    );
   }
 }
 
