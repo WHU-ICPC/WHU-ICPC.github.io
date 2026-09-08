@@ -25,6 +25,11 @@ const pageTitle = document.querySelector("#page-title");
 const awardsPage = document.querySelector("#awards-page");
 const boardPage = document.querySelector("#board-page");
 const boardFrame = document.querySelector("#board-frame");
+const calendarPage = document.querySelector("#calendar-page");
+const calendarMonth = document.querySelector("#calendar-month");
+const calendarGrid = document.querySelector("#calendar-grid");
+const calendarPrevious = document.querySelector("#calendar-previous");
+const calendarNext = document.querySelector("#calendar-next");
 const introductionPath = "boards/社团与竞赛简介.pdf";
 const introductionTitle = "社团与竞赛简介";
 
@@ -35,6 +40,8 @@ let wfQualifications = [];
 let firstBloodIndex = new Map();
 let boardTreeData = [];
 let activeBoardPath = "";
+let calendarEvents = [];
+let displayedCalendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 
 function createElement(tag, className, text) {
   const element = document.createElement(tag);
@@ -126,6 +133,22 @@ function validateBoards(data) {
   return validateNodes(data);
 }
 
+function validateCalendar(data) {
+  if (!data || !Array.isArray(data.events)) throw new Error("比赛日历数据不是数组");
+
+  return data.events.map((event) => {
+    if (
+      !/^\d{4}-\d{2}-\d{2}$/.test(event.date) ||
+      !event.type ||
+      !event.city ||
+      !event.school
+    ) {
+      throw new Error("发现格式不正确的比赛日历记录");
+    }
+    return event;
+  });
+}
+
 function recordKey(record) {
   return JSON.stringify([record.season, record.contest, record.team]);
 }
@@ -182,6 +205,54 @@ function renderBoardMenu() {
   renderBoardTree(boardTreeData, boardTree);
 }
 
+function calendarDateKey(year, month, day) {
+  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function renderCalendar() {
+  const year = displayedCalendarMonth.getFullYear();
+  const month = displayedCalendarMonth.getMonth();
+  const today = new Date();
+  const eventsByDate = new Map();
+
+  for (const event of calendarEvents) {
+    if (!eventsByDate.has(event.date)) eventsByDate.set(event.date, []);
+    eventsByDate.get(event.date).push(event);
+  }
+
+  calendarMonth.textContent = `${year} 年 ${month + 1} 月`;
+  calendarGrid.replaceChildren();
+
+  for (const weekday of ["一", "二", "三", "四", "五", "六", "日"]) {
+    calendarGrid.append(createElement("div", "calendar-weekday", `周${weekday}`));
+  }
+
+  const leadingDays = (new Date(year, month, 1).getDay() + 6) % 7;
+  for (let index = 0; index < leadingDays; index += 1) {
+    calendarGrid.append(createElement("div", "calendar-day calendar-day-empty"));
+  }
+
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let day = 1; day <= daysInMonth; day += 1) {
+    const dateKey = calendarDateKey(year, month, day);
+    const cell = createElement("article", "calendar-day");
+    if (year === today.getFullYear() && month === today.getMonth() && day === today.getDate()) {
+      cell.classList.add("is-today");
+    }
+    cell.append(createElement("h3", "calendar-day-number", String(day)));
+
+    for (const event of eventsByDate.get(dateKey) || []) {
+      const item = createElement("div", "calendar-event");
+      item.append(
+        createElement("strong", "calendar-event-type", event.type),
+        createElement("span", "calendar-event-detail", `${event.city} · ${event.school}`),
+      );
+      cell.append(item);
+    }
+    calendarGrid.append(cell);
+  }
+}
+
 function setMenuOpen(open) {
   siteSidebar.classList.toggle("is-open", open);
   sidebarBackdrop.hidden = !open;
@@ -197,6 +268,7 @@ function renderPage() {
   const boardPath = boardMatch ? decodeURIComponent(boardMatch[1]) : "";
   const board = boardPath ? boardNodeByPath(boardTreeData, boardPath) : null;
   const isIntroduction = hash === "#introduction";
+  const isCalendar = hash === "#calendar";
 
   if (board || isIntroduction) {
     const path = board ? board.path : introductionPath;
@@ -205,21 +277,24 @@ function renderPage() {
     activeBoardPath = board ? path : "";
     awardsPage.hidden = true;
     boardPage.hidden = false;
+    calendarPage.hidden = true;
     boardFrame.dataset.format = format;
     if (boardFrame.getAttribute("src") !== path) boardFrame.src = path;
     boardFrame.title = title;
     pageTitle.textContent = title;
     document.title = `${title} · WHU ACM-ICPC`;
   } else {
-    if (activeBoardPath) {
+    if (activeBoardPath || boardFrame.hasAttribute("src")) {
       boardFrame.removeAttribute("src");
       delete boardFrame.dataset.format;
     }
     activeBoardPath = "";
-    awardsPage.hidden = false;
+    awardsPage.hidden = isCalendar;
     boardPage.hidden = true;
-    pageTitle.textContent = "奖牌陈列室";
-    document.title = "奖牌陈列室 · WHU ACM-ICPC";
+    calendarPage.hidden = !isCalendar;
+    pageTitle.textContent = isCalendar ? "比赛日历" : "奖牌陈列室";
+    document.title = `${pageTitle.textContent} · WHU ACM-ICPC`;
+    if (isCalendar) renderCalendar();
   }
 
   for (const link of boardTree.querySelectorAll("[data-board-path]")) {
@@ -228,8 +303,9 @@ function renderPage() {
   for (const link of document.querySelectorAll("[data-page]")) {
     link.classList.toggle(
       "is-active",
-      (link.dataset.page === "medals" && !board && !isIntroduction) ||
-        (link.dataset.page === "introduction" && isIntroduction),
+      (link.dataset.page === "medals" && !board && !isIntroduction && !isCalendar) ||
+        (link.dataset.page === "introduction" && isIntroduction) ||
+        (link.dataset.page === "calendar" && isCalendar),
     );
   }
 }
@@ -498,6 +574,22 @@ sidebarFolderToggle.addEventListener("click", () => {
   sidebarFolderToggle.setAttribute("aria-expanded", String(!expanded));
   boardTree.hidden = expanded;
 });
+calendarPrevious.addEventListener("click", () => {
+  displayedCalendarMonth = new Date(
+    displayedCalendarMonth.getFullYear(),
+    displayedCalendarMonth.getMonth() - 1,
+    1,
+  );
+  renderCalendar();
+});
+calendarNext.addEventListener("click", () => {
+  displayedCalendarMonth = new Date(
+    displayedCalendarMonth.getFullYear(),
+    displayedCalendarMonth.getMonth() + 1,
+    1,
+  );
+  renderCalendar();
+});
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && siteSidebar.classList.contains("is-open")) {
     setMenuOpen(false);
@@ -530,12 +622,14 @@ Promise.all([
   fetchJson("data/wf.json"),
   fetchJson("data/first_blood.json"),
   fetchJson("data/boards.json"),
+  fetchJson("data/calendar.json"),
 ])
-  .then(([awardData, wfData, firstBloodData, boardsData]) => {
+  .then(([awardData, wfData, firstBloodData, boardsData, calendarData]) => {
     records = validateRecords(awardData);
     wfQualifications = validateWfQualifications(wfData);
     firstBloodIndex = indexFirstBlood(validateFirstBlood(firstBloodData));
     boardTreeData = validateBoards(boardsData);
+    calendarEvents = validateCalendar(calendarData);
     renderBoardMenu();
     renderSeasons();
     renderPage();

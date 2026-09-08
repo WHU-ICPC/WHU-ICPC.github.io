@@ -13,7 +13,7 @@
   --silver: #596870;
   --bronze: #8d4d2d;
   --page-padding: clamp(1rem, 5vw, 5rem);
-  --content-width: 90rem;
+  --content-width: 85rem;
   --team-width: 10.5rem;
   --member-width: 13.5rem;
   --header-height: 3.5rem;
@@ -329,6 +329,123 @@ main {
   height: max(52rem, calc(100vh - 8rem));
   border: 0;
   background: #fff;
+}
+
+.calendar-page {
+  padding-block: clamp(2rem, 5vw, 4rem) 5rem;
+}
+
+.calendar-toolbar {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr) 2.6rem;
+  align-items: center;
+  width: 100%;
+  margin-inline: auto;
+}
+
+.calendar-month {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  text-align: center;
+}
+
+.calendar-nav-button {
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.calendar-nav-button:hover {
+  background: var(--hover);
+}
+
+.calendar-nav-button:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.15rem;
+}
+
+.calendar-hint {
+  width: 100%;
+  margin: 0.65rem auto 1.25rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 100%;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: 0.35rem;
+}
+
+.calendar-weekday {
+  padding: 0.6rem;
+  border-bottom: 1px solid var(--line-strong);
+  background: rgb(64 81 181 / 5%);
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.calendar-day {
+  min-height: 9.5rem;
+  padding: 0.55rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.calendar-day:nth-child(7n) {
+  border-right: 0;
+}
+
+.calendar-day-number {
+  margin: 0 0 0.45rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.calendar-day.is-today .calendar-day-number {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+}
+
+.calendar-event {
+  display: grid;
+  gap: 0.12rem;
+  margin-top: 0.35rem;
+  padding: 0.32rem 0.4rem;
+  border-left: 0.2rem solid var(--primary);
+  border-radius: 0.15rem;
+  background: rgb(64 81 181 / 7%);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.calendar-event-type {
+  color: var(--ink);
+}
+
+.calendar-event-detail {
+  color: var(--muted);
 }
 
 .awards {
@@ -873,6 +990,37 @@ body:has(.person-dialog[open]) {
     border-right: 0;
     border-left: 0;
     border-radius: 0;
+  }
+
+  .calendar-page {
+    margin-inline: -0.2rem;
+    padding-top: 1.5rem;
+  }
+
+  .calendar-grid {
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+  }
+
+  .calendar-weekday {
+    padding-inline: 0.15rem;
+    font-size: 0.75rem;
+  }
+
+  .calendar-day {
+    min-height: 6.25rem;
+    padding: 0.35rem;
+  }
+
+  .calendar-day-number {
+    margin-bottom: 0.25rem;
+    font-size: 0.85rem;
+  }
+
+  .calendar-event {
+    padding: 0.2rem 0.25rem;
+    font-size: 0.68rem;
   }
 }
 

@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#ffffff" />
     <title>WHU ACM-ICPC</title>
     <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=15" />
-    <script src="script.js?v=6" defer></script>
+    <link rel="stylesheet" href="styles.css?v=16" />
+    <script src="script.js?v=7" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -42,6 +42,7 @@
       <nav class="sidebar-nav">
         <a class="sidebar-link" data-page="introduction" href="#introduction">社团与竞赛简介</a>
         <a class="sidebar-link" data-page="medals" href="#medals">奖牌陈列室</a>
+        <a class="sidebar-link" data-page="calendar" href="#calendar">比赛日历</a>
         <div class="sidebar-folder">
           <button class="sidebar-folder-toggle" type="button" aria-expanded="false">
             <span class="folder-chevron" aria-hidden="true"></span>
@@ -62,6 +63,15 @@
         <div class="board-frame-wrap">
           <iframe id="board-frame" class="board-frame" title="比赛榜单" loading="lazy"></iframe>
         </div>
+      </section>
+      <section id="calendar-page" class="calendar-page" aria-label="比赛日历" hidden>
+        <div class="calendar-toolbar">
+          <button id="calendar-previous" class="calendar-nav-button" type="button" aria-label="上一个月">‹</button>
+          <h2 id="calendar-month" class="calendar-month" aria-live="polite"></h2>
+          <button id="calendar-next" class="calendar-nav-button" type="button" aria-label="下一个月">›</button>
+        </div>
+        <p class="calendar-hint">赛事信息包含比赛类型、举办城市和承办学校。</p>
+        <div id="calendar-grid" class="calendar-grid" aria-label="比赛日历"></div>
       </section>
     </main>
 
