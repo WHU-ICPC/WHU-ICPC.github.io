@@ -28,6 +28,8 @@ const boardFrame = document.querySelector("#board-frame");
 const introductionPath = "boards/社团与竞赛简介.pdf";
 const introductionTitle = "社团与竞赛简介";
 
+if (!window.location.hash) window.location.replace("#introduction");
+
 let records = [];
 let wfQualifications = [];
 let firstBloodIndex = new Map();
