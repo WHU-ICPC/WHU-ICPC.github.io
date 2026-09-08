@@ -400,6 +400,10 @@ main {
   border-bottom: 1px solid var(--line);
 }
 
+.calendar-day-adjacent {
+  opacity: 0.42;
+}
+
 .calendar-day:nth-child(7n) {
   border-right: 0;
 }

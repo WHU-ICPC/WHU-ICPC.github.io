@@ -209,6 +209,17 @@ function calendarDateKey(year, month, day) {
   return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
+function appendCalendarEvents(cell, dateKey, eventsByDate) {
+  for (const event of eventsByDate.get(dateKey) || []) {
+    const item = createElement("div", "calendar-event");
+    item.append(
+      createElement("strong", "calendar-event-type", event.type),
+      createElement("span", "calendar-event-detail", `${event.city} · ${event.school}`),
+    );
+    cell.append(item);
+  }
+}
+
 function renderCalendar() {
   const year = displayedCalendarMonth.getFullYear();
   const month = displayedCalendarMonth.getMonth();
@@ -228,8 +239,17 @@ function renderCalendar() {
   }
 
   const leadingDays = (new Date(year, month, 1).getDay() + 6) % 7;
-  for (let index = 0; index < leadingDays; index += 1) {
-    calendarGrid.append(createElement("div", "calendar-day calendar-day-empty"));
+  const previousMonthDays = new Date(year, month, 0).getDate();
+  for (let day = previousMonthDays - leadingDays + 1; day <= previousMonthDays; day += 1) {
+    const cell = createElement("article", "calendar-day calendar-day-adjacent");
+    cell.append(createElement("h3", "calendar-day-number", String(day)));
+    const previousMonth = new Date(year, month - 1, day);
+    appendCalendarEvents(
+      cell,
+      calendarDateKey(previousMonth.getFullYear(), previousMonth.getMonth(), day),
+      eventsByDate,
+    );
+    calendarGrid.append(cell);
   }
 
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -241,14 +261,20 @@ function renderCalendar() {
     }
     cell.append(createElement("h3", "calendar-day-number", String(day)));
 
-    for (const event of eventsByDate.get(dateKey) || []) {
-      const item = createElement("div", "calendar-event");
-      item.append(
-        createElement("strong", "calendar-event-type", event.type),
-        createElement("span", "calendar-event-detail", `${event.city} · ${event.school}`),
-      );
-      cell.append(item);
-    }
+    appendCalendarEvents(cell, dateKey, eventsByDate);
+    calendarGrid.append(cell);
+  }
+
+  const trailingDays = (7 - ((leadingDays + daysInMonth) % 7)) % 7;
+  for (let day = 1; day <= trailingDays; day += 1) {
+    const cell = createElement("article", "calendar-day calendar-day-adjacent");
+    cell.append(createElement("h3", "calendar-day-number", String(day)));
+    const nextMonth = new Date(year, month + 1, day);
+    appendCalendarEvents(
+      cell,
+      calendarDateKey(nextMonth.getFullYear(), nextMonth.getMonth(), day),
+      eventsByDate,
+    );
     calendarGrid.append(cell);
   }
 }
