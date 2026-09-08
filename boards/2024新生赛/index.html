@@ -8,14 +8,14 @@ h1 { margin: 0 0 1rem; font-size: 1.2rem; font-weight: 600; }
 .board-scroll { overflow-x: auto; }
 .scoreboard { border-collapse: collapse; clear: both; margin: 0 auto; }
 .scoreboard td { font-size: small; vertical-align: middle; text-align: center; }
-.scoreboard td div { width: 4em; font-size: 120%; display: inline-block; }
+.scoreboard td div { width: 4em; height: 42px; box-sizing: border-box; font-size: 120%; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; }
 .scoreboard td div span { display: block; font-size: 70%; font-weight: normal; }
 .scoreboard tr { height: 42px; border-bottom: 1px solid #222; }
 .scoreboard td, .scoreboard th { padding: 0; border-right: 1px solid #bbb; }
 .scoreboard td.score_cell { min-width: 4.2em; border-right: 0; }
 .scoreboard td.scorepl { width: 2ex; padding: 0 .3em; }
 .scoreboard td.scoreaf { padding-left: 2px; border: 0; white-space: nowrap; text-align: center; }
-.scoreboard td.scoreaf img { max-width: 32px; max-height: 32px; vertical-align: middle; }
+.scoreboard td.scoreaf img { width: 32px; height: 32px; max-width: 32px; max-height: 32px; object-fit: contain; display: inline-block; vertical-align: middle; }
 .scoreboard a { display: block; padding: 2px 1px; color: #000; text-decoration: none; }
 .scoreboard .scoretn { max-width: 18rem; padding: 0 5px; overflow: hidden; text-align: right; font-weight: bold; text-overflow: ellipsis; white-space: nowrap; }
 .scoreboard .scoretn a { overflow: hidden; }
@@ -32,6 +32,12 @@ h1 { margin: 0 0 1rem; font-size: 1.2rem; font-weight: 600; }
 .cl_ddd7e1 { background-color: #ddd7e1; }
 .sortorderswitch { border-top: 2px solid #111; }
 .badge { display: inline-block; padding: .2em .35em; font-size: 75%; line-height: 1; font-weight: 700; vertical-align: baseline; }
+.problem-badge { min-width: 34px !important; min-height: 34px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; font-size: 1rem; }
+/* 结果方块略微缩小；左右空隙与上下空隙一致（细小留白） */
+.scoreboard td.score_cell { padding: .067em .05em; }
+.scoreboard td.score_cell div { width: 3.6em; height: 40px; }
+/* WA 红块仅含 "X tries" 时补空白首行，使其与 AC 绿块中下方的小字 "X try(s)" 高度/位置一致 */
+.scoreboard td.score_cell div.score_incorrect::before { content: "\00a0"; display: block; }
 .badge-warning { color: #212529; background-color: #ffc107; }
 .scorelegend { display: inline-block; margin: 1.5rem .75rem 0 0; vertical-align: top; }
 .scorelegend td, .scorelegend th { width: 25ex; padding: .25rem .5rem; text-align: center; }
