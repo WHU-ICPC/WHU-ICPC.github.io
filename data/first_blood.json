@@ -46,5 +46,13 @@
     "problem": "C",
     "color": "#008000",
     "textColor": "#000000"
+  },
+  {
+    "season": "2025-2026",
+    "contest": "ICPC 沈阳",
+    "team": "秘封俱乐部",
+    "problem": "B",
+    "color": "#FFA500",
+    "textColor": "#000000"
   }
 ]
