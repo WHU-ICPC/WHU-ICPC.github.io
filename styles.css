@@ -373,13 +373,6 @@ main {
   outline-offset: 0.15rem;
 }
 
-.calendar-hint {
-  width: 100%;
-  margin: 0.65rem auto 1.25rem;
-  color: var(--muted);
-  text-align: center;
-}
-
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
