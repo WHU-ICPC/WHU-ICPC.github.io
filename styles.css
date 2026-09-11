@@ -530,9 +530,9 @@ main {
 }
 
 .medal-counts {
-  display: grid;
-  grid-template-columns: 2.5rem repeat(3, 3.75rem);
-  gap: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
   align-items: center;
   justify-self: end;
 }
@@ -576,8 +576,9 @@ main {
 }
 
 .medal-count {
-  display: inline-flex;
-  gap: 0.45rem;
+  display: inline-grid;
+  grid-template-columns: 1em 2ch;
+  column-gap: 0.45rem;
   align-items: baseline;
   font-size: 1rem;
   white-space: nowrap;
@@ -598,6 +599,24 @@ main {
 
 .medal-gold {
   color: var(--gold);
+}
+
+.podium-champion {
+  color: #b04a00;
+}
+
+.podium-runner-up {
+  color: #8b3a62;
+}
+
+.podium-third {
+  color: #087f8c;
+}
+
+.medal-count.podium-champion,
+.medal-count.podium-runner-up,
+.medal-count.podium-third {
+  font-weight: 700;
 }
 
 .medal-silver {
@@ -761,6 +780,28 @@ main {
   margin-bottom: 0.2rem;
   font-weight: 500;
   font-variant-numeric: tabular-nums;
+}
+
+.result.podium-champion,
+.result.podium-runner-up,
+.result.podium-third {
+  width: fit-content;
+  padding: 0.08rem 0.4rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.result.podium-champion {
+  background: #fff0e5;
+}
+
+.result.podium-runner-up {
+  background: #fcecf3;
+}
+
+.result.podium-third {
+  background: #e8f7f8;
 }
 
 .first-blood-balloon {

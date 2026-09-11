@@ -2,9 +2,15 @@ const MEDAL_CLASS = {
   金: "medal-gold",
   银: "medal-silver",
   铜: "medal-bronze",
+  冠军: "podium-champion",
+  亚军: "podium-runner-up",
+  季军: "podium-third",
 };
 
 const MEDAL_ORDER = ["金", "银", "铜"];
+const PODIUM_ORDER = ["冠军", "亚军", "季军"];
+const STATISTIC_ORDER = ["冠军", "亚军", "季军", ...MEDAL_ORDER];
+const STATISTIC_LABEL = { 冠军: "冠", 亚军: "亚", 季军: "季" };
 const collator = new Intl.Collator("zh-CN", { numeric: true });
 
 const seasonList = document.querySelector("#season-list");
@@ -59,8 +65,11 @@ function seasonStart(season) {
 }
 
 function countMedals(items) {
-  const counts = { 金: 0, 银: 0, 铜: 0 };
-  for (const item of items) counts[item.award] += 1;
+  const counts = { 冠军: 0, 亚军: 0, 季军: 0, 金: 0, 银: 0, 铜: 0 };
+  for (const item of items) {
+    counts[item.award] += 1;
+    if (item.podium) counts[item.podium] += 1;
+  }
   return counts;
 }
 
@@ -70,6 +79,8 @@ function validateRecords(data) {
   return data.map((record) => {
     const validAward = MEDAL_ORDER.includes(record.award);
     const validRank = record.rank === null || Number.isInteger(record.rank);
+    const validPodium =
+      record.podium === undefined || record.podium === null || PODIUM_ORDER.includes(record.podium);
     if (
       !record.season ||
       !record.contest ||
@@ -77,7 +88,9 @@ function validateRecords(data) {
       !Array.isArray(record.members) ||
       record.members.length === 0 ||
       !validAward ||
-      !validRank
+      !validRank ||
+      !validPodium ||
+      (record.podium && record.award !== "金")
     ) {
       throw new Error("发现格式不正确的奖项记录");
     }
@@ -351,8 +364,15 @@ function seasonWfTeams(season) {
 
 function medalCountElement(award, count) {
   const item = createElement("span", `medal-count ${MEDAL_CLASS[award]}`);
-  item.append(createElement("span", "", award), createElement("strong", "", count));
+  item.append(
+    createElement("span", "", STATISTIC_LABEL[award] || award),
+    createElement("strong", "", count),
+  );
   return item;
+}
+
+function resultLabel(record) {
+  return record.podium || `${record.award}奖`;
 }
 
 function personButton(name) {
@@ -381,16 +401,16 @@ function firstBloodElement(firstBlood) {
 }
 
 function resultElement(record, includeRank = true) {
-  const result = createElement("span", `result ${MEDAL_CLASS[record.award]}`);
-  result.append(document.createTextNode(`${record.award}奖`));
+  const label = resultLabel(record);
+  const result = createElement("span", `result ${MEDAL_CLASS[record.podium || record.award]}`);
+  result.append(document.createTextNode(label));
   if (includeRank && record.rank !== null) {
     result.append(createElement("span", "result-rank", ` · ${record.rank}`));
   }
   for (const firstBlood of firstBloodIndex.get(recordKey(record)) || []) {
     result.append(firstBloodElement(firstBlood));
   }
-  result.title =
-    record.rank === null ? `${record.award}奖` : `${record.award}奖，第 ${record.rank} 名`;
+  result.title = record.rank === null ? label : `${label}，第 ${record.rank} 名`;
   return result;
 }
 
@@ -502,7 +522,7 @@ function renderSeason(season, seasonRecords, index) {
     placeholder.setAttribute("aria-hidden", "true");
     countGroup.append(placeholder);
   }
-  for (const award of MEDAL_ORDER) {
+  for (const award of STATISTIC_ORDER) {
     countGroup.append(medalCountElement(award, counts[award]));
   }
 
