@@ -17,6 +17,7 @@ const seasonList = document.querySelector("#season-list");
 const loadingStatus = document.querySelector("#loading-status");
 const personDialog = document.querySelector("#person-dialog");
 const personName = document.querySelector("#person-name");
+const personSummary = document.querySelector("#person-summary");
 const personRecordsBody = document.querySelector("#person-records-body");
 const contestDialog = document.querySelector("#contest-dialog");
 const contestName = document.querySelector("#contest-name");
@@ -371,6 +372,10 @@ function medalCountElement(award, count) {
   return item;
 }
 
+function personHasWfQualification(honors) {
+  return honors.some((honor) => seasonWfTeams(honor.season).includes(honor.team));
+}
+
 function resultLabel(record) {
   return record.podium || `${record.award}奖`;
 }
@@ -556,6 +561,10 @@ function showPerson(name) {
     .sort((left, right) => seasonStart(right.season) - seasonStart(left.season));
 
   personName.textContent = name;
+  const counts = countMedals(honors);
+  const summaryItems = STATISTIC_ORDER.map((award) => medalCountElement(award, counts[award]));
+  if (personHasWfQualification(honors)) summaryItems.unshift(wfBadge("wf-person-badge"));
+  personSummary.replaceChildren(...summaryItems);
   personRecordsBody.replaceChildren();
 
   for (const honor of honors) {
