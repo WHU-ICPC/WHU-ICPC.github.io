@@ -424,12 +424,22 @@ function teamScore(team) {
   return [counts.金, counts.银, counts.铜, team.records.length];
 }
 
+function teamBestRank(team) {
+  const ranks = team.records
+    .map((record) => record.rank)
+    .filter((rank) => Number.isInteger(rank));
+  return ranks.length > 0 ? Math.min(...ranks) : Number.POSITIVE_INFINITY;
+}
+
 function compareTeams(left, right) {
   const leftScore = teamScore(left);
   const rightScore = teamScore(right);
   for (let index = 0; index < leftScore.length; index += 1) {
     if (leftScore[index] !== rightScore[index]) return rightScore[index] - leftScore[index];
   }
+  const leftBestRank = teamBestRank(left);
+  const rightBestRank = teamBestRank(right);
+  if (leftBestRank !== rightBestRank) return leftBestRank - rightBestRank;
   return collator.compare(left.team, right.team);
 }
 
