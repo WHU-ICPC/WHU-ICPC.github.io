@@ -54,5 +54,21 @@
     "problem": "B",
     "color": "#FFA500",
     "textColor": "#000000"
+  },
+  {
+    "season": "2026-2027",
+    "contest": "CCPC 乐山",
+    "team": "很弱的低手",
+    "problem": "D",
+    "color": "#00BFFF",
+    "textColor": "#000000"
+  },
+  {
+    "season": "2026-2027",
+    "contest": "CCPC 乐山",
+    "team": "很弱的低手",
+    "problem": "K",
+    "color": "#FFC0CB",
+    "textColor": "#000000"
   }
 ]
