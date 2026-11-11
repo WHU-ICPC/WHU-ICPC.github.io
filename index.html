@@ -11,7 +11,7 @@
     <title>WHU ACM-ICPC</title>
     <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css?v=18" />
-    <script src="script.js?v=10" defer></script>
+    <script src="script.js?v=11" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -44,11 +44,18 @@
         <a class="sidebar-link" data-page="medals" href="#medals">奖牌陈列室</a>
         <a class="sidebar-link" data-page="calendar" href="#calendar">比赛日历</a>
         <div class="sidebar-folder">
-          <button class="sidebar-folder-toggle" type="button" aria-expanded="false">
+          <button class="sidebar-folder-toggle" data-tree-target="board-tree" type="button" aria-expanded="false">
             <span class="folder-chevron" aria-hidden="true"></span>
-            <span>往届活动存档</span>
+            <span>往届比赛榜单</span>
           </button>
           <div id="board-tree" class="board-tree" hidden></div>
+        </div>
+        <div class="sidebar-folder">
+          <button class="sidebar-folder-toggle" data-tree-target="document-tree" type="button" aria-expanded="false">
+            <span class="folder-chevron" aria-hidden="true"></span>
+            <span>资料与通知</span>
+          </button>
+          <div id="document-tree" class="board-tree" hidden></div>
         </div>
       </nav>
     </aside>
@@ -59,9 +66,9 @@
         <div id="loading-status" class="loading-status" role="status"></div>
         <div id="season-list" class="season-list"></div>
       </section>
-      <section id="board-page" class="board-page" aria-label="比赛榜单" hidden>
+      <section id="board-page" class="board-page" aria-label="内容查看" hidden>
         <div class="board-frame-wrap">
-          <iframe id="board-frame" class="board-frame" title="比赛榜单" loading="lazy"></iframe>
+          <iframe id="board-frame" class="board-frame" title="内容查看" loading="lazy"></iframe>
         </div>
       </section>
       <section id="calendar-page" class="calendar-page" aria-label="比赛日历" hidden>

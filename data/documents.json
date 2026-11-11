@@ -1,0 +1,28 @@
+[
+  {
+    "title": "区域赛决赛规则",
+    "children": [
+      {
+        "title": "区域赛报销规则",
+        "path": "documents/区域赛决赛规则/区域赛报销规则.pdf"
+      },
+      {
+        "title": "决赛晋级规则",
+        "path": "documents/区域赛决赛规则/决赛晋级规则.pdf"
+      }
+    ]
+  },
+  {
+    "title": "2026 暑假集训",
+    "children": [
+      {
+        "title": "暑假集训通知",
+        "path": "documents/2026 暑假集训/暑假集训通知.pdf"
+      },
+      {
+        "title": "暑假集训积分方案",
+        "path": "documents/2026 暑假集训/暑假集训积分方案.pdf"
+      }
+    ]
+  }
+]

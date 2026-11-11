@@ -26,8 +26,9 @@ const menuToggle = document.querySelector("#menu-toggle");
 const menuClose = document.querySelector("#menu-close");
 const siteSidebar = document.querySelector("#site-sidebar");
 const sidebarBackdrop = document.querySelector("#sidebar-backdrop");
-const sidebarFolderToggle = document.querySelector(".sidebar-folder-toggle");
+const sidebarFolderToggles = document.querySelectorAll(".sidebar-folder-toggle");
 const boardTree = document.querySelector("#board-tree");
+const documentTree = document.querySelector("#document-tree");
 const pageTitle = document.querySelector("#page-title");
 const awardsPage = document.querySelector("#awards-page");
 const boardPage = document.querySelector("#board-page");
@@ -37,7 +38,7 @@ const calendarMonth = document.querySelector("#calendar-month");
 const calendarGrid = document.querySelector("#calendar-grid");
 const calendarPrevious = document.querySelector("#calendar-previous");
 const calendarNext = document.querySelector("#calendar-next");
-const introductionPath = "boards/社团与竞赛简介.pdf";
+const introductionPath = "documents/社团与竞赛简介.pdf";
 const introductionTitle = "社团与竞赛简介";
 
 if (!window.location.hash) window.location.replace("#introduction");
@@ -46,7 +47,8 @@ let records = [];
 let wfQualifications = [];
 let firstBloodIndex = new Map();
 let boardTreeData = [];
-let activeBoardPath = "";
+let documentTreeData = [];
+let activeArchivePath = "";
 let calendarEvents = [];
 let displayedCalendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 
@@ -128,16 +130,16 @@ function validateFirstBlood(data) {
   });
 }
 
-function validateBoards(data) {
-  if (!Array.isArray(data)) throw new Error("活动存档数据不是数组");
+function validateArchiveTree(data, label) {
+  if (!Array.isArray(data)) throw new Error(`${label}数据不是数组`);
 
   function validateNodes(nodes) {
     return nodes.map((node) => {
       if (!node.title || (!node.path && !Array.isArray(node.children))) {
-        throw new Error("发现格式不正确的活动存档记录");
+        throw new Error(`发现格式不正确的${label}记录`);
       }
       if (node.children) {
-        if (!Array.isArray(node.children)) throw new Error("活动存档目录格式不正确");
+        if (!Array.isArray(node.children)) throw new Error(`${label}目录格式不正确`);
         node.children = validateNodes(node.children);
       }
       return node;
@@ -145,6 +147,14 @@ function validateBoards(data) {
   }
 
   return validateNodes(data);
+}
+
+function validateBoards(data) {
+  return validateArchiveTree(data, "比赛榜单");
+}
+
+function validateDocuments(data) {
+  return validateArchiveTree(data, "资料与通知");
 }
 
 function validateCalendar(data) {
@@ -177,11 +187,11 @@ function indexFirstBlood(items) {
   return index;
 }
 
-function boardNodeByPath(nodes, path) {
+function archiveNodeByPath(nodes, path) {
   for (const node of nodes) {
     if (node.path === path) return node;
     if (node.children) {
-      const found = boardNodeByPath(node.children, path);
+      const found = archiveNodeByPath(node.children, path);
       if (found) return found;
     }
   }
@@ -195,7 +205,7 @@ function boardFormat(path) {
   return "html";
 }
 
-function renderBoardTree(nodes, parent) {
+function renderArchiveTree(nodes, parent, route, dataAttribute) {
   for (const node of nodes) {
     if (node.children) {
       const folder = createElement("details", "board-folder");
@@ -203,20 +213,22 @@ function renderBoardTree(nodes, parent) {
       const children = createElement("div", "board-folder-children");
       folder.append(summary, children);
       parent.append(folder);
-      renderBoardTree(node.children, children);
+      renderArchiveTree(node.children, children, route, dataAttribute);
       continue;
     }
 
     const link = createElement("a", "board-link", node.title);
-    link.href = `#board=${encodeURIComponent(node.path)}`;
-    link.dataset.boardPath = node.path;
+    link.href = `#${route}=${encodeURIComponent(node.path)}`;
+    link.dataset[dataAttribute] = node.path;
     parent.append(link);
   }
 }
 
-function renderBoardMenu() {
+function renderArchiveMenus() {
   boardTree.replaceChildren();
-  renderBoardTree(boardTreeData, boardTree);
+  documentTree.replaceChildren();
+  renderArchiveTree(boardTreeData, boardTree, "board", "boardPath");
+  renderArchiveTree(documentTreeData, documentTree, "document", "documentPath");
 }
 
 function calendarDateKey(year, month, day) {
@@ -305,16 +317,20 @@ function setMenuOpen(open) {
 function renderPage() {
   const hash = window.location.hash;
   const boardMatch = hash.match(/^#board=(.*)$/);
+  const documentMatch = hash.match(/^#document=(.*)$/);
   const boardPath = boardMatch ? decodeURIComponent(boardMatch[1]) : "";
-  const board = boardPath ? boardNodeByPath(boardTreeData, boardPath) : null;
+  const documentPath = documentMatch ? decodeURIComponent(documentMatch[1]) : "";
+  const board = boardPath ? archiveNodeByPath(boardTreeData, boardPath) : null;
+  const documentItem = documentPath ? archiveNodeByPath(documentTreeData, documentPath) : null;
+  const archiveItem = board || documentItem;
   const isIntroduction = hash === "#introduction";
   const isCalendar = hash === "#calendar";
 
-  if (board || isIntroduction) {
-    const path = board ? board.path : introductionPath;
-    const title = board ? board.title : introductionTitle;
-    const format = board ? board.format || boardFormat(path) : "pdf";
-    activeBoardPath = board ? path : "";
+  if (archiveItem || isIntroduction) {
+    const path = archiveItem ? archiveItem.path : introductionPath;
+    const title = archiveItem ? archiveItem.title : introductionTitle;
+    const format = archiveItem ? archiveItem.format || boardFormat(path) : "pdf";
+    activeArchivePath = archiveItem ? path : "";
     awardsPage.hidden = true;
     boardPage.hidden = false;
     calendarPage.hidden = true;
@@ -324,11 +340,11 @@ function renderPage() {
     pageTitle.textContent = title;
     document.title = `${title} · WHU ACM-ICPC`;
   } else {
-    if (activeBoardPath || boardFrame.hasAttribute("src")) {
+    if (activeArchivePath || boardFrame.hasAttribute("src")) {
       boardFrame.removeAttribute("src");
       delete boardFrame.dataset.format;
     }
-    activeBoardPath = "";
+    activeArchivePath = "";
     awardsPage.hidden = isCalendar;
     boardPage.hidden = true;
     calendarPage.hidden = !isCalendar;
@@ -338,12 +354,15 @@ function renderPage() {
   }
 
   for (const link of boardTree.querySelectorAll("[data-board-path]")) {
-    link.classList.toggle("is-active", link.dataset.boardPath === activeBoardPath);
+    link.classList.toggle("is-active", link.dataset.boardPath === activeArchivePath);
+  }
+  for (const link of documentTree.querySelectorAll("[data-document-path]")) {
+    link.classList.toggle("is-active", link.dataset.documentPath === activeArchivePath);
   }
   for (const link of document.querySelectorAll("[data-page]")) {
     link.classList.toggle(
       "is-active",
-      (link.dataset.page === "medals" && !board && !isIntroduction && !isCalendar) ||
+      (link.dataset.page === "medals" && !archiveItem && !isIntroduction && !isCalendar) ||
         (link.dataset.page === "introduction" && isIntroduction) ||
         (link.dataset.page === "calendar" && isCalendar),
     );
@@ -634,11 +653,14 @@ document.addEventListener("click", (event) => {
 menuToggle.addEventListener("click", () => setMenuOpen(!siteSidebar.classList.contains("is-open")));
 menuClose.addEventListener("click", () => setMenuOpen(false));
 sidebarBackdrop.addEventListener("click", () => setMenuOpen(false));
-sidebarFolderToggle.addEventListener("click", () => {
-  const expanded = sidebarFolderToggle.getAttribute("aria-expanded") === "true";
-  sidebarFolderToggle.setAttribute("aria-expanded", String(!expanded));
-  boardTree.hidden = expanded;
-});
+for (const folderToggle of sidebarFolderToggles) {
+  folderToggle.addEventListener("click", () => {
+    const expanded = folderToggle.getAttribute("aria-expanded") === "true";
+    const tree = document.querySelector(`#${folderToggle.dataset.treeTarget}`);
+    folderToggle.setAttribute("aria-expanded", String(!expanded));
+    tree.hidden = expanded;
+  });
+}
 calendarPrevious.addEventListener("click", () => {
   displayedCalendarMonth = new Date(
     displayedCalendarMonth.getFullYear(),
@@ -687,15 +709,17 @@ Promise.all([
   fetchJson("data/wf.json"),
   fetchJson("data/first_blood.json"),
   fetchJson("data/boards.json"),
+  fetchJson("data/documents.json"),
   fetchJson("data/calendar.json"),
 ])
-  .then(([awardData, wfData, firstBloodData, boardsData, calendarData]) => {
+  .then(([awardData, wfData, firstBloodData, boardsData, documentsData, calendarData]) => {
     records = validateRecords(awardData);
     wfQualifications = validateWfQualifications(wfData);
     firstBloodIndex = indexFirstBlood(validateFirstBlood(firstBloodData));
     boardTreeData = validateBoards(boardsData);
+    documentTreeData = validateDocuments(documentsData);
     calendarEvents = validateCalendar(calendarData);
-    renderBoardMenu();
+    renderArchiveMenus();
     renderSeasons();
     renderPage();
     loadingStatus.hidden = true;

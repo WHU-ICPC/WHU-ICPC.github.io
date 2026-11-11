@@ -9,7 +9,8 @@
 - **一血标记**：在奖项记录中展示指定题目的一血气球。
 - **社团与竞赛简介**：在站内嵌入展示协会简介 PDF。
 - **比赛日历**：按月展示比赛安排，并显示比赛类型、城市和学校。
-- **往届活动存档**：以目录树展示历届赛事榜单、通知、积分方案等 HTML、PDF 或 MHTML 文件。
+- **往届比赛榜单**：以目录树展示按赛事分类存放的历届 HTML、PDF 或 MHTML 榜单。
+- **资料与通知**：独立展示集训通知、积分方案和相关规则等 PDF 文件。
 
 ## 本地预览
 
@@ -25,8 +26,9 @@ python -m http.server 8000
 
 ```text
 assets/              网站图标等静态资源
-boards/              社团简介和往届活动的 HTML、PDF、MHTML 等展示文件
+boards/              按赛事分类存放的比赛榜单文件
 data/                页面使用的 JSON 数据
+documents/           社团简介、通知、方案和规则等资料文件
 index.html           页面结构
 script.js            页面交互与数据渲染逻辑
 styles.css           页面样式
@@ -90,27 +92,39 @@ styles.css           页面样式
 }
 ```
 
-### 往届活动存档
+### 往届比赛榜单
 
-活动目录维护在 `data/boards.json`。叶节点的 `path` 指向仓库中 `boards/` 下的文件；可指向 HTML、PDF 或 MHTML。带 `children` 的节点会显示为可展开目录。
+榜单目录维护在 `data/boards.json`。叶节点的 `path` 指向仓库中 `boards/` 下按赛事分类存放的 HTML、PDF 或 MHTML 榜单。带 `children` 的节点会显示为可展开目录。
 
 ```json
 {
-  "title": "2026暑假集训",
+  "title": "2026 暑假集训",
   "children": [
     {
-      "title": "暑假集训通知",
-      "path": "boards/2026暑假集训/暑假集训通知.pdf"
-    },
-    {
       "title": "round1-拉美大奖赛",
-      "path": "boards/2026暑假集训/round1/index.html"
+      "path": "boards/2026 暑假集训/round1/index.html"
     }
   ]
 }
 ```
 
-新增文件时，请先将文件放入合适的 `boards/` 子目录，再在 `data/boards.json` 中添加对应的叶节点。
+新增榜单时，请先将文件放入对应赛事的 `boards/` 子目录，再在 `data/boards.json` 中添加叶节点。`boards/` 中不存放通知、规则或简介文件。
+
+### 资料与通知
+
+资料目录维护在 `data/documents.json`。叶节点的 `path` 指向 `documents/` 下的通知、方案或规则文件，并通过独立的 `#document=` 路由展示。
+
+```json
+{
+  "title": "2026 暑假集训",
+  "children": [
+    {
+      "title": "暑假集训通知",
+      "path": "documents/2026 暑假集训/暑假集训通知.pdf"
+    }
+  ]
+}
+```
 
 ### 比赛日历
 
@@ -131,4 +145,4 @@ styles.css           页面样式
 
 ## 更新社团简介
 
-站内“社团与竞赛简介”入口固定展示 `boards/社团与竞赛简介.pdf`。替换简介时请使用同名 PDF 覆盖该文件，以保持链接不变。
+站内“社团与竞赛简介”入口固定展示 `documents/社团与竞赛简介.pdf`。替换简介时请使用同名 PDF 覆盖该文件，以保持链接不变。
