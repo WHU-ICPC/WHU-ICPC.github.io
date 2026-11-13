@@ -11,6 +11,7 @@ const MEDAL_ORDER = ["金", "银", "铜"];
 const PODIUM_ORDER = ["冠军", "亚军", "季军"];
 const STATISTIC_ORDER = ["冠军", "亚军", "季军", ...MEDAL_ORDER];
 const STATISTIC_LABEL = { 冠军: "冠", 亚军: "亚", 季军: "季" };
+const PLAYER_MEDAL_POINTS = { 金: 4, 银: 2, 铜: 1 };
 const FINAL_CONTESTS = new Set(["ICPC EC Final", "CCPC Final"]);
 const collator = new Intl.Collator("zh-CN", { numeric: true });
 
@@ -524,7 +525,8 @@ function comparePlayers(left, right) {
   const leftScore = weightedPlayerScore(left);
   const rightScore = weightedPlayerScore(right);
   for (let index = 0; index < leftScore.length; index += 1) {
-    if (leftScore[index] !== rightScore[index]) return rightScore[index] - leftScore[index];
+    const difference = rightScore[index] - leftScore[index];
+    if (Math.abs(difference) > 1e-9) return difference;
   }
   const leftBestRank = teamBestRank(left);
   const rightBestRank = teamBestRank(right);
@@ -533,15 +535,18 @@ function comparePlayers(left, right) {
 }
 
 function weightedPlayerScore(player) {
-  const counts = { 金: 0, 银: 0, 铜: 0 };
-  let total = 0;
+  const weightedCounts = { 金: 0, 银: 0, 铜: 0 };
+  let points = 0;
   for (const record of player.records) {
     const elapsedSeasons = Math.max(0, latestAwardSeasonStart - seasonStart(record.season));
-    const weight = playerTimeDecay ** elapsedSeasons;
-    counts[record.award] += weight;
-    total += weight;
+    const timeWeight = playerTimeDecay ** elapsedSeasons;
+    const type = contestType(record.contest);
+    const contestWeight = type === "final" ? 1.5 : type === "women" ? 1 / 1.5 : 1;
+    const weight = timeWeight * contestWeight;
+    weightedCounts[record.award] += weight;
+    points += PLAYER_MEDAL_POINTS[record.award] * weight;
   }
-  return [counts.金, counts.银, counts.铜, total];
+  return [points, weightedCounts.金, weightedCounts.银, weightedCounts.铜];
 }
 
 function playerHistoryTable(honors, name) {
