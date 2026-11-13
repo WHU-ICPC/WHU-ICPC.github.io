@@ -11,10 +11,12 @@ const MEDAL_ORDER = ["金", "银", "铜"];
 const PODIUM_ORDER = ["冠军", "亚军", "季军"];
 const STATISTIC_ORDER = ["冠军", "亚军", "季军", ...MEDAL_ORDER];
 const STATISTIC_LABEL = { 冠军: "冠", 亚军: "亚", 季军: "季" };
+const FINAL_CONTESTS = new Set(["ICPC EC Final", "CCPC Final"]);
 const collator = new Intl.Collator("zh-CN", { numeric: true });
 
 const seasonList = document.querySelector("#season-list");
 const loadingStatus = document.querySelector("#loading-status");
+const awardFilterButtons = document.querySelectorAll(".filter-switch");
 const personDialog = document.querySelector("#person-dialog");
 const personName = document.querySelector("#person-name");
 const personSummary = document.querySelector("#person-summary");
@@ -51,6 +53,12 @@ let documentTreeData = [];
 let activeArchivePath = "";
 let calendarEvents = [];
 let displayedCalendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+let seasonsRendered = false;
+
+const awardFilters = {
+  source: new Set(["ICPC", "CCPC"]),
+  type: new Set(["regional", "final", "women"]),
+};
 
 function createElement(tag, className, text) {
   const element = document.createElement(tag);
@@ -65,6 +73,27 @@ function seasonLabel(season) {
 
 function seasonStart(season) {
   return Number.parseInt(season.split("-")[0], 10);
+}
+
+function contestSource(contest) {
+  return contest.startsWith("CCPC") ? "CCPC" : "ICPC";
+}
+
+function contestType(contest) {
+  if (FINAL_CONTESTS.has(contest)) return "final";
+  if (contest === "CCPC 女生赛") return "women";
+  return "regional";
+}
+
+function recordMatchesFilters(record) {
+  return (
+    awardFilters.source.has(contestSource(record.contest)) &&
+    awardFilters.type.has(contestType(record.contest))
+  );
+}
+
+function filteredRecords() {
+  return records.filter(recordMatchesFilters);
 }
 
 function countMedals(items) {
@@ -376,9 +405,15 @@ function wfBadge(className = "") {
   return badge;
 }
 
-function seasonWfTeams(season) {
+function seasonWfTeams(season, seasonRecords) {
+  const visibleIcpcTeams = new Set(
+    seasonRecords
+      .filter((record) => contestSource(record.contest) === "ICPC")
+      .map((record) => record.team),
+  );
   return wfQualifications
     .filter((qualification) => qualification.season === season)
+    .filter((qualification) => visibleIcpcTeams.has(qualification.team))
     .map((qualification) => qualification.team);
 }
 
@@ -392,7 +427,14 @@ function medalCountElement(award, count) {
 }
 
 function personHasWfQualification(honors) {
-  return honors.some((honor) => seasonWfTeams(honor.season).includes(honor.team));
+  return honors.some(
+    (honor) =>
+      contestSource(honor.contest) === "ICPC" &&
+      wfQualifications.some(
+        (qualification) =>
+          qualification.season === honor.season && qualification.team === honor.team,
+      ),
+  );
 }
 
 function resultLabel(record) {
@@ -464,7 +506,7 @@ function compareTeams(left, right) {
 
 function seasonTable(seasonRecords, season) {
   const contests = [...new Set(seasonRecords.map((record) => record.contest))];
-  const wfTeams = new Set(seasonWfTeams(season));
+  const wfTeams = new Set(seasonWfTeams(season, seasonRecords));
   const teams = new Map();
 
   for (const record of seasonRecords) {
@@ -548,7 +590,7 @@ function renderSeason(season, seasonRecords, index) {
 
   const counts = countMedals(seasonRecords);
   const countGroup = createElement("span", "medal-counts");
-  const wfTeams = seasonWfTeams(season);
+  const wfTeams = seasonWfTeams(season, seasonRecords);
   if (wfTeams.length > 0) {
     countGroup.append(wfBadge("wf-season-badge"));
   } else {
@@ -571,21 +613,34 @@ function renderSeason(season, seasonRecords, index) {
 }
 
 function renderSeasons() {
+  const expandedSeasons = new Set(
+    [...seasonList.querySelectorAll(".season[open]")].map((season) => season.dataset.season),
+  );
+  const visibleRecords = filteredRecords();
   const grouped = new Map();
-  for (const record of records) {
+  for (const record of visibleRecords) {
     if (!grouped.has(record.season)) grouped.set(record.season, []);
     grouped.get(record.season).push(record);
   }
 
   const seasons = [...grouped.keys()].sort((left, right) => seasonStart(right) - seasonStart(left));
   seasonList.replaceChildren();
+  if (seasons.length === 0) {
+    seasonList.append(createElement("p", "award-filter-empty", "当前筛选条件下没有获奖记录。"));
+    seasonsRendered = records.length > 0;
+    return;
+  }
   seasons.forEach((season, index) => {
-    seasonList.append(renderSeason(season, grouped.get(season), index));
+    const seasonElement = renderSeason(season, grouped.get(season), index);
+    seasonElement.dataset.season = season;
+    seasonElement.open = seasonsRendered ? expandedSeasons.has(season) : index === 0;
+    seasonList.append(seasonElement);
   });
+  seasonsRendered = true;
 }
 
 function showPerson(name) {
-  const honors = records
+  const honors = filteredRecords()
     .filter((record) => record.members.includes(name))
     .sort((left, right) => seasonStart(right.season) - seasonStart(left.season));
 
@@ -613,7 +668,7 @@ function showPerson(name) {
 }
 
 function showContest(contest) {
-  const honors = records
+  const honors = filteredRecords()
     .filter((record) => record.contest === contest)
     .sort(
       (left, right) =>
@@ -649,6 +704,18 @@ document.addEventListener("click", (event) => {
   const person = event.target.closest("[data-person]");
   if (person) showPerson(person.dataset.person);
 });
+
+for (const button of awardFilterButtons) {
+  button.addEventListener("click", () => {
+    const group = button.dataset.filterGroup;
+    const value = button.dataset.filterValue;
+    const enabled = button.getAttribute("aria-checked") !== "true";
+    button.setAttribute("aria-checked", String(enabled));
+    if (enabled) awardFilters[group].add(value);
+    else awardFilters[group].delete(value);
+    renderSeasons();
+  });
+}
 
 menuToggle.addEventListener("click", () => setMenuOpen(!siteSidebar.classList.contains("is-open")));
 menuClose.addEventListener("click", () => setMenuOpen(false));

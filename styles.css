@@ -450,6 +450,112 @@ main {
   padding-block: clamp(2rem, 5vw, 4rem) 5rem;
 }
 
+.award-filters {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  background: rgb(64 81 181 / 3%);
+}
+
+.award-filter-heading {
+  display: block;
+}
+
+.award-filter-heading h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 650;
+}
+
+.award-filter-groups {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.award-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  align-items: center;
+}
+
+.award-filter-label {
+  min-width: 4.5rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.award-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.filter-switch {
+  display: inline-flex;
+  gap: 0.45rem;
+  align-items: center;
+  min-height: 2rem;
+  padding: 0.25rem 0.15rem;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.88rem;
+  line-height: 1;
+}
+
+.filter-switch:hover {
+  color: var(--primary);
+}
+
+.filter-switch:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.12rem;
+}
+
+.filter-switch-track {
+  position: relative;
+  width: 1.9rem;
+  height: 1.05rem;
+  border-radius: 1rem;
+  background: var(--line-strong);
+  transition: background-color 150ms ease;
+}
+
+.filter-switch-track > span {
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 25%);
+  transition: transform 150ms ease;
+}
+
+.filter-switch[aria-checked="true"] .filter-switch-track {
+  background: var(--primary);
+}
+
+.filter-switch[aria-checked="true"] .filter-switch-track > span {
+  transform: translateX(0.85rem);
+}
+
+.award-filter-empty {
+  margin: 0;
+  padding: 2.5rem 1rem;
+  border: 1px dashed var(--line-strong);
+  border-radius: 0.35rem;
+  color: var(--muted);
+  text-align: center;
+}
+
 .loading-status {
   padding: 1.25rem 0;
   color: var(--muted);
@@ -1017,6 +1123,16 @@ body:has(.person-dialog[open]) {
     gap: 0.75rem;
   }
 
+  .award-filters {
+    padding: 0.9rem;
+  }
+
+  .award-filter-groups,
+  .award-filter-group {
+    display: grid;
+    gap: 0.55rem;
+  }
+
   .season > summary {
     grid-template-columns: 1fr auto;
     gap: 0.75rem;
@@ -1090,7 +1206,9 @@ body:has(.person-dialog[open]) {
 
   .season,
   .season > summary,
-  .season-toggle::before {
+  .season-toggle::before,
+  .filter-switch-track,
+  .filter-switch-track > span {
     transition: none;
   }
 }
