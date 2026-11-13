@@ -520,31 +520,57 @@ main {
 
 .filter-switch-track {
   position: relative;
-  width: 1.9rem;
-  height: 1.05rem;
-  border-radius: 1rem;
-  background: var(--line-strong);
-  transition: background-color 150ms ease;
+  display: grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border: 0.1rem solid #c62828;
+  border-radius: 50%;
+  background: #ffebee;
+  color: #b71c1c;
+  font-size: 0.92rem;
+  font-weight: 800;
+  line-height: 1;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
 }
 
-.filter-switch-track > span {
+.filter-switch-track::before,
+.filter-switch-track::after {
   position: absolute;
-  top: 0.15rem;
-  left: 0.15rem;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 25%);
-  transition: transform 150ms ease;
+  top: 50%;
+  left: 50%;
+  width: 0.58rem;
+  height: 0.12rem;
+  border-radius: 1rem;
+  background: currentColor;
+  content: "";
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.filter-switch-track::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .filter-switch[aria-checked="true"] .filter-switch-track {
-  background: var(--primary);
+  border-color: #2e7d32;
+  background: #e8f5e9;
+  color: #1b5e20;
 }
 
-.filter-switch[aria-checked="true"] .filter-switch-track > span {
-  transform: translateX(0.85rem);
+.filter-switch[aria-checked="true"] .filter-switch-track::before {
+  position: static;
+  width: auto;
+  height: auto;
+  background: transparent;
+  content: "✓";
+  transform: none;
+}
+
+.filter-switch[aria-checked="true"] .filter-switch-track::after {
+  display: none;
 }
 
 .award-filter-empty {
@@ -1207,8 +1233,7 @@ body:has(.person-dialog[open]) {
   .season,
   .season > summary,
   .season-toggle::before,
-  .filter-switch-track,
-  .filter-switch-track > span {
+  .filter-switch-track {
     transition: none;
   }
 }
