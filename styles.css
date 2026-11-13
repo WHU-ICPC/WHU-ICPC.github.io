@@ -445,7 +445,8 @@ main {
   color: var(--muted);
 }
 
-.awards {
+.awards,
+.players-page {
   min-width: 0;
   padding-block: clamp(2rem, 5vw, 4rem) 5rem;
 }
@@ -493,6 +494,94 @@ main {
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
+}
+
+.time-decay-control {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.time-decay-range {
+  width: min(13rem, 42vw);
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.time-decay-range:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: 0.2rem;
+}
+
+.time-decay-value {
+  min-width: 2.4rem;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 650;
+  text-align: right;
+}
+
+.filter-help-wrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.filter-help {
+  display: grid;
+  place-items: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  color: var(--muted);
+  cursor: help;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.filter-help:hover,
+.filter-help:focus-visible {
+  border-color: var(--primary);
+  color: var(--primary);
+  outline: 0;
+}
+
+.filter-help-tooltip {
+  position: absolute;
+  z-index: 5;
+  bottom: calc(100% + 0.6rem);
+  left: 50%;
+  width: min(23rem, calc(100vw - 3rem));
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.35rem;
+  background: #252525;
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 400;
+  line-height: 1.55;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 0.25rem);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.filter-help-tooltip::after {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  border: 0.35rem solid transparent;
+  border-top-color: #252525;
+  content: "";
+  transform: translateX(-50%);
+}
+
+.filter-help-wrap:hover .filter-help-tooltip,
+.filter-help-wrap:focus-within .filter-help-tooltip {
+  opacity: 1;
+  transform: translate(-50%, 0);
 }
 
 .filter-switch {
@@ -596,6 +685,133 @@ main {
   display: grid;
   min-width: 0;
   gap: 0.85rem;
+}
+
+.player-list {
+  display: grid;
+  min-width: 0;
+  gap: 0.65rem;
+}
+
+.player-entry > summary {
+  display: grid;
+  grid-template-columns: minmax(24rem, 1fr) minmax(30rem, auto) 1.75rem;
+  gap: 1rem;
+  align-items: center;
+}
+
+.player-entry {
+  min-width: 0;
+  overflow: clip;
+  border: 1px solid #d4d4d5;
+  border-radius: 0.28571429rem;
+  background: var(--surface);
+  box-shadow: 0 1px 2px 0 rgb(34 36 38 / 6%);
+}
+
+.player-entry[open] {
+  border-color: #bcbdbd;
+  box-shadow: 0 2px 5px 0 rgb(34 36 38 / 10%);
+}
+
+.player-entry > summary {
+  min-height: 4.1rem;
+  padding: 0.7rem 1.1rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.player-entry > summary::-webkit-details-marker {
+  display: none;
+}
+
+.player-entry > summary:hover {
+  background: var(--hover);
+}
+
+.player-entry > summary:focus-visible {
+  outline: 0.15rem solid var(--primary);
+  outline-offset: -0.15rem;
+}
+
+.player-entry[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.player-identity {
+  display: flex;
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.1rem;
+  align-items: baseline;
+}
+
+.player-name {
+  color: var(--ink);
+  font-size: 1.08rem;
+  font-weight: 650;
+}
+
+.player-last-season {
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.player-summary-medals {
+  gap: 0.4rem 0.85rem;
+  justify-self: end;
+}
+
+.player-wf-badge {
+  margin-right: 0.15rem;
+}
+
+.player-summary-medals .medal-count {
+  column-gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.player-summary-medals .medal-count > span {
+  font-size: 0.98rem;
+}
+
+.player-summary-medals .medal-count strong {
+  font-size: 1.12rem;
+}
+
+.player-toggle {
+  position: relative;
+  width: 1.75rem;
+  height: 1.75rem;
+  color: var(--muted);
+}
+
+.player-toggle::before {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.5rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-right: 0.12rem solid currentColor;
+  border-bottom: 0.12rem solid currentColor;
+  content: "";
+  transform: rotate(45deg);
+  transition: transform 150ms ease;
+}
+
+.player-entry[open] .player-toggle::before {
+  transform: translateY(0.25rem) rotate(225deg);
+}
+
+.player-history-wrap {
+  padding: 0.35rem 1.1rem 1rem;
+  overflow-x: auto;
+}
+
+.player-history-table {
+  min-width: 42rem;
 }
 
 .season {
@@ -1121,6 +1337,30 @@ body:has(.person-dialog[open]) {
   overflow: hidden;
 }
 
+@media (max-width: 1000px) {
+  .player-entry > summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.55rem 1rem;
+    padding: 0.75rem 0.9rem;
+  }
+
+  .player-identity {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .player-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .player-summary-medals {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: start;
+  }
+}
+
 @media (max-width: 760px) {
   :root {
     --page-padding: 1rem;
@@ -1149,6 +1389,36 @@ body:has(.person-dialog[open]) {
     gap: 0.75rem;
   }
 
+  .player-list {
+    gap: 0.7rem;
+  }
+
+  .player-entry > summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.55rem 1rem;
+    padding: 0.75rem 0.9rem;
+  }
+
+  .player-identity {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .player-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .player-summary-medals {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    justify-self: start;
+  }
+
+  .player-history-wrap {
+    padding-inline: 0.9rem;
+  }
+
   .award-filters {
     padding: 0.9rem;
   }
@@ -1157,6 +1427,32 @@ body:has(.person-dialog[open]) {
   .award-filter-group {
     display: grid;
     gap: 0.55rem;
+  }
+
+  .time-decay-control {
+    width: 100%;
+  }
+
+  .time-decay-range {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .filter-help-tooltip {
+    right: -0.35rem;
+    left: auto;
+    transform: translateY(0.25rem);
+  }
+
+  .filter-help-tooltip::after {
+    right: 0.65rem;
+    left: auto;
+    transform: none;
+  }
+
+  .filter-help-wrap:hover .filter-help-tooltip,
+  .filter-help-wrap:focus-within .filter-help-tooltip {
+    transform: none;
   }
 
   .season > summary {
@@ -1233,6 +1529,10 @@ body:has(.person-dialog[open]) {
   .season,
   .season > summary,
   .season-toggle::before,
+  .player-entry,
+  .player-entry > summary,
+  .player-toggle::before,
+  .filter-help-tooltip,
   .filter-switch-track {
     transition: none;
   }

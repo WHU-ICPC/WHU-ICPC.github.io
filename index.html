@@ -10,8 +10,8 @@
     <meta name="theme-color" content="#ffffff" />
     <title>WHU ACM-ICPC</title>
     <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=19" />
-    <script src="script.js?v=12" defer></script>
+    <link rel="stylesheet" href="styles.css?v=23" />
+    <script src="script.js?v=15" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -42,6 +42,7 @@
       <nav class="sidebar-nav">
         <a class="sidebar-link" data-page="introduction" href="#introduction">社团与竞赛简介</a>
         <a class="sidebar-link" data-page="medals" href="#medals">奖牌陈列室</a>
+        <a class="sidebar-link" data-page="players" href="#players">选手名录</a>
         <a class="sidebar-link" data-page="calendar" href="#calendar">比赛日历</a>
         <div class="sidebar-folder">
           <button class="sidebar-folder-toggle" data-tree-target="board-tree" type="button" aria-expanded="false">
@@ -102,6 +103,58 @@
         </section>
         <div id="loading-status" class="loading-status" role="status"></div>
         <div id="season-list" class="season-list"></div>
+      </section>
+      <section id="players-page" class="players-page" aria-label="选手名录" hidden>
+        <section class="award-filters" aria-labelledby="player-filter-title">
+          <div class="award-filter-heading">
+            <h2 id="player-filter-title">筛选比赛</h2>
+          </div>
+          <div class="award-filter-groups">
+            <div class="award-filter-group" role="group" aria-labelledby="player-source-filter-label">
+              <span id="player-source-filter-label" class="award-filter-label">比赛来源</span>
+              <div class="award-filter-options">
+                <button class="filter-switch" type="button" role="switch" aria-checked="true" data-filter-group="source" data-filter-value="ICPC">
+                  <span>ICPC</span>
+                  <span class="filter-switch-track" aria-hidden="true"></span>
+                </button>
+                <button class="filter-switch" type="button" role="switch" aria-checked="true" data-filter-group="source" data-filter-value="CCPC">
+                  <span>CCPC</span>
+                  <span class="filter-switch-track" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="award-filter-group" role="group" aria-labelledby="player-type-filter-label">
+              <span id="player-type-filter-label" class="award-filter-label">赛事类型</span>
+              <div class="award-filter-options">
+                <button class="filter-switch" type="button" role="switch" aria-checked="true" data-filter-group="type" data-filter-value="regional">
+                  <span>区域赛</span>
+                  <span class="filter-switch-track" aria-hidden="true"></span>
+                </button>
+                <button class="filter-switch" type="button" role="switch" aria-checked="true" data-filter-group="type" data-filter-value="final">
+                  <span>决赛</span>
+                  <span class="filter-switch-track" aria-hidden="true"></span>
+                </button>
+                <button class="filter-switch" type="button" role="switch" aria-checked="true" data-filter-group="type" data-filter-value="women">
+                  <span>女生赛</span>
+                  <span class="filter-switch-track" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="award-filter-group time-decay-filter" role="group" aria-labelledby="player-time-decay-label">
+              <span id="player-time-decay-label" class="award-filter-label">时间流逝倍率</span>
+              <div class="time-decay-control">
+                <input id="player-time-decay" class="time-decay-range" type="range" min="0" max="1" step="0.01" value="0.80" aria-describedby="time-decay-help-text" />
+                <output id="player-time-decay-value" class="time-decay-value" for="player-time-decay">0.80</output>
+                <span class="filter-help-wrap">
+                  <span class="filter-help" tabindex="0" aria-label="查看时间流逝倍率说明" aria-describedby="time-decay-help-text">?</span>
+                  <span id="time-decay-help-text" class="filter-help-tooltip" role="tooltip">设时间流逝倍率为 k，则当前赛季的奖牌按 1 倍计入，前一赛季按 k 倍、前两赛季按 k² 倍计入，以此类推。</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <div id="player-loading-status" class="loading-status" role="status"></div>
+        <div id="player-list" class="player-list"></div>
       </section>
       <section id="board-page" class="board-page" aria-label="内容查看" hidden>
         <div class="board-frame-wrap">

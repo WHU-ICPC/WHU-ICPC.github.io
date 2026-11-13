@@ -17,6 +17,10 @@ const collator = new Intl.Collator("zh-CN", { numeric: true });
 const seasonList = document.querySelector("#season-list");
 const loadingStatus = document.querySelector("#loading-status");
 const awardFilterButtons = document.querySelectorAll(".filter-switch");
+const playerList = document.querySelector("#player-list");
+const playerLoadingStatus = document.querySelector("#player-loading-status");
+const playerTimeDecayInput = document.querySelector("#player-time-decay");
+const playerTimeDecayValue = document.querySelector("#player-time-decay-value");
 const personDialog = document.querySelector("#person-dialog");
 const personName = document.querySelector("#person-name");
 const personSummary = document.querySelector("#person-summary");
@@ -33,6 +37,7 @@ const boardTree = document.querySelector("#board-tree");
 const documentTree = document.querySelector("#document-tree");
 const pageTitle = document.querySelector("#page-title");
 const awardsPage = document.querySelector("#awards-page");
+const playersPage = document.querySelector("#players-page");
 const boardPage = document.querySelector("#board-page");
 const boardFrame = document.querySelector("#board-frame");
 const calendarPage = document.querySelector("#calendar-page");
@@ -54,6 +59,9 @@ let activeArchivePath = "";
 let calendarEvents = [];
 let displayedCalendarMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
 let seasonsRendered = false;
+let playersRendered = false;
+let playerTimeDecay = 0.8;
+let latestAwardSeasonStart = 0;
 
 const awardFilters = {
   source: new Set(["ICPC", "CCPC"]),
@@ -354,6 +362,7 @@ function renderPage() {
   const archiveItem = board || documentItem;
   const isIntroduction = hash === "#introduction";
   const isCalendar = hash === "#calendar";
+  const isPlayers = hash === "#players";
 
   if (archiveItem || isIntroduction) {
     const path = archiveItem ? archiveItem.path : introductionPath;
@@ -361,6 +370,7 @@ function renderPage() {
     const format = archiveItem ? archiveItem.format || boardFormat(path) : "pdf";
     activeArchivePath = archiveItem ? path : "";
     awardsPage.hidden = true;
+    playersPage.hidden = true;
     boardPage.hidden = false;
     calendarPage.hidden = true;
     boardFrame.dataset.format = format;
@@ -374,10 +384,11 @@ function renderPage() {
       delete boardFrame.dataset.format;
     }
     activeArchivePath = "";
-    awardsPage.hidden = isCalendar;
+    awardsPage.hidden = isCalendar || isPlayers;
+    playersPage.hidden = !isPlayers;
     boardPage.hidden = true;
     calendarPage.hidden = !isCalendar;
-    pageTitle.textContent = isCalendar ? "比赛日历" : "奖牌陈列室";
+    pageTitle.textContent = isCalendar ? "比赛日历" : isPlayers ? "选手名录" : "奖牌陈列室";
     document.title = `${pageTitle.textContent} · WHU ACM-ICPC`;
     if (isCalendar) renderCalendar();
   }
@@ -391,8 +402,13 @@ function renderPage() {
   for (const link of document.querySelectorAll("[data-page]")) {
     link.classList.toggle(
       "is-active",
-      (link.dataset.page === "medals" && !archiveItem && !isIntroduction && !isCalendar) ||
+      (link.dataset.page === "medals" &&
+        !archiveItem &&
+        !isIntroduction &&
+        !isCalendar &&
+        !isPlayers) ||
         (link.dataset.page === "introduction" && isIntroduction) ||
+        (link.dataset.page === "players" && isPlayers) ||
         (link.dataset.page === "calendar" && isCalendar),
     );
   }
@@ -502,6 +518,132 @@ function compareTeams(left, right) {
   const rightBestRank = teamBestRank(right);
   if (leftBestRank !== rightBestRank) return leftBestRank - rightBestRank;
   return collator.compare(left.team, right.team);
+}
+
+function comparePlayers(left, right) {
+  const leftScore = weightedPlayerScore(left);
+  const rightScore = weightedPlayerScore(right);
+  for (let index = 0; index < leftScore.length; index += 1) {
+    if (leftScore[index] !== rightScore[index]) return rightScore[index] - leftScore[index];
+  }
+  const leftBestRank = teamBestRank(left);
+  const rightBestRank = teamBestRank(right);
+  if (leftBestRank !== rightBestRank) return leftBestRank - rightBestRank;
+  return collator.compare(left.name, right.name);
+}
+
+function weightedPlayerScore(player) {
+  const counts = { 金: 0, 银: 0, 铜: 0 };
+  let total = 0;
+  for (const record of player.records) {
+    const elapsedSeasons = Math.max(0, latestAwardSeasonStart - seasonStart(record.season));
+    const weight = playerTimeDecay ** elapsedSeasons;
+    counts[record.award] += weight;
+    total += weight;
+  }
+  return [counts.金, counts.银, counts.铜, total];
+}
+
+function playerHistoryTable(honors, name) {
+  const wrap = createElement("div", "player-history-wrap");
+  const table = createElement("table", "person-records player-history-table");
+  const head = document.createElement("thead");
+  const headRow = document.createElement("tr");
+  for (const label of ["赛季", "队伍", "比赛", "成绩"]) {
+    const heading = createElement("th", "", label);
+    heading.scope = "col";
+    headRow.append(heading);
+  }
+  head.append(headRow);
+
+  const body = document.createElement("tbody");
+  const sortedHonors = [...honors].sort(
+    (left, right) =>
+      seasonStart(right.season) - seasonStart(left.season) ||
+      collator.compare(left.contest, right.contest) ||
+      (left.rank ?? Number.POSITIVE_INFINITY) - (right.rank ?? Number.POSITIVE_INFINITY),
+  );
+  for (const honor of sortedHonors) {
+    const row = document.createElement("tr");
+    row.append(
+      createElement("td", "", seasonLabel(honor.season)),
+      createElement("td", "", honor.team),
+      createElement("td", "", honor.contest),
+    );
+    const result = document.createElement("td");
+    result.append(resultElement(honor));
+    row.append(result);
+    body.append(row);
+  }
+
+  table.append(head, body);
+  wrap.append(table);
+  wrap.setAttribute("aria-label", `${name} 的历次奖牌`);
+  return wrap;
+}
+
+function renderPlayer(player) {
+  const details = createElement("details", "player-entry");
+  details.dataset.playerName = player.name;
+  const summary = document.createElement("summary");
+
+  const identity = createElement("span", "player-identity");
+  const name = createElement("span", "player-name", player.name);
+  const latestSeason = player.records.reduce((latest, record) => {
+    if (!latest || seasonStart(record.season) > seasonStart(latest)) return record.season;
+    return latest;
+  }, "");
+  const lastSeason = createElement(
+    "span",
+    "player-last-season",
+    `最后参赛于 ${seasonLabel(latestSeason)} 赛季`,
+  );
+  identity.append(name, lastSeason);
+
+  const counts = countMedals(player.records);
+  const countGroup = createElement("span", "player-summary-medals medal-counts");
+  if (personHasWfQualification(player.records)) {
+    countGroup.append(wfBadge("wf-person-badge player-wf-badge"));
+  }
+  for (const award of STATISTIC_ORDER) {
+    countGroup.append(medalCountElement(award, counts[award]));
+  }
+
+  const toggle = createElement("span", "player-toggle");
+  toggle.setAttribute("aria-hidden", "true");
+  summary.append(identity, countGroup, toggle);
+  details.append(summary, playerHistoryTable(player.records, player.name));
+  return details;
+}
+
+function renderPlayers() {
+  const expandedPlayers = new Set(
+    [...playerList.querySelectorAll(".player-entry[open]")].map(
+      (player) => player.dataset.playerName,
+    ),
+  );
+  const players = new Map();
+  for (const record of filteredRecords()) {
+    for (const member of new Set(record.members)) {
+      if (!players.has(member)) players.set(member, { name: member, records: [] });
+      players.get(member).records.push(record);
+    }
+  }
+
+  const sortedPlayers = [...players.values()].sort(comparePlayers);
+  playerList.replaceChildren();
+  if (sortedPlayers.length === 0) {
+    playerList.append(createElement("p", "award-filter-empty", "当前筛选条件下没有选手记录。"));
+    playersRendered = records.length > 0;
+    return;
+  }
+
+  for (const player of sortedPlayers) {
+    const playerElement = renderPlayer(player);
+    playerElement.open = playersRendered && expandedPlayers.has(player.name);
+    playerList.append(playerElement);
+  }
+  playersRendered = true;
 }
 
 function seasonTable(seasonRecords, season) {
@@ -705,17 +847,35 @@ document.addEventListener("click", (event) => {
   if (person) showPerson(person.dataset.person);
 });
 
+function syncAwardFilterButtons() {
+  for (const button of awardFilterButtons) {
+    const enabled = awardFilters[button.dataset.filterGroup].has(button.dataset.filterValue);
+    button.setAttribute("aria-checked", String(enabled));
+  }
+}
+
+function renderFilteredAwardViews() {
+  renderSeasons();
+  renderPlayers();
+}
+
 for (const button of awardFilterButtons) {
   button.addEventListener("click", () => {
     const group = button.dataset.filterGroup;
     const value = button.dataset.filterValue;
-    const enabled = button.getAttribute("aria-checked") !== "true";
-    button.setAttribute("aria-checked", String(enabled));
+    const enabled = !awardFilters[group].has(value);
     if (enabled) awardFilters[group].add(value);
     else awardFilters[group].delete(value);
-    renderSeasons();
+    syncAwardFilterButtons();
+    renderFilteredAwardViews();
   });
 }
+
+playerTimeDecayInput.addEventListener("input", () => {
+  playerTimeDecay = Number.parseFloat(playerTimeDecayInput.value);
+  playerTimeDecayValue.value = playerTimeDecay.toFixed(2);
+  renderPlayers();
+});
 
 menuToggle.addEventListener("click", () => setMenuOpen(!siteSidebar.classList.contains("is-open")));
 menuClose.addEventListener("click", () => setMenuOpen(false));
@@ -781,17 +941,23 @@ Promise.all([
 ])
   .then(([awardData, wfData, firstBloodData, boardsData, documentsData, calendarData]) => {
     records = validateRecords(awardData);
+    latestAwardSeasonStart = records.reduce(
+      (latest, record) => Math.max(latest, seasonStart(record.season)),
+      0,
+    );
     wfQualifications = validateWfQualifications(wfData);
     firstBloodIndex = indexFirstBlood(validateFirstBlood(firstBloodData));
     boardTreeData = validateBoards(boardsData);
     documentTreeData = validateDocuments(documentsData);
     calendarEvents = validateCalendar(calendarData);
     renderArchiveMenus();
-    renderSeasons();
+    renderFilteredAwardViews();
     renderPage();
     loadingStatus.hidden = true;
+    playerLoadingStatus.hidden = true;
   })
   .catch((error) => {
     loadingStatus.textContent = `${error.message}。请稍后重试。`;
+    playerLoadingStatus.textContent = `${error.message}。请稍后重试。`;
     console.error(error);
   });
