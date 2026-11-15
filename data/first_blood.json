@@ -70,5 +70,13 @@
     "problem": "K",
     "color": "#FFC0CB",
     "textColor": "#000000"
+  },
+  {
+    "season": "2026-2027",
+    "contest": "ICPC 沈阳",
+    "team": "很弱的低手",
+    "problem": "L",
+    "color": "#1E9E50",
+    "textColor": "#000000"
   }
 ]
