@@ -352,6 +352,8 @@ main {
 }
 
 .calendar-nav-button {
+  display: grid;
+  place-items: center;
   width: 2.5rem;
   height: 2.5rem;
   padding: 0;
@@ -360,8 +362,18 @@ main {
   background: var(--surface);
   color: var(--primary);
   cursor: pointer;
-  font-size: 2rem;
-  line-height: 1;
+}
+
+.calendar-nav-button svg {
+  display: block;
+  width: 1.15rem;
+  height: 1.15rem;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .calendar-nav-button:hover {

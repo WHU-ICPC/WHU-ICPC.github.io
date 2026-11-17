@@ -10,7 +10,7 @@
     <meta name="theme-color" content="#ffffff" />
     <title>WHU ACM-ICPC</title>
     <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="styles.css?v=23" />
+    <link rel="stylesheet" href="styles.css?v=24" />
     <script src="script.js?v=16" defer></script>
   </head>
   <body>
@@ -163,9 +163,17 @@
       </section>
       <section id="calendar-page" class="calendar-page" aria-label="比赛日历" hidden>
         <div class="calendar-toolbar">
-          <button id="calendar-previous" class="calendar-nav-button" type="button" aria-label="上一个月">‹</button>
+          <button id="calendar-previous" class="calendar-nav-button" type="button" aria-label="上一个月">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m15 5-7 7 7 7" />
+            </svg>
+          </button>
           <h2 id="calendar-month" class="calendar-month" aria-live="polite"></h2>
-          <button id="calendar-next" class="calendar-nav-button" type="button" aria-label="下一个月">›</button>
+          <button id="calendar-next" class="calendar-nav-button" type="button" aria-label="下一个月">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 5 7 7-7 7" />
+            </svg>
+          </button>
         </div>
         <div id="calendar-grid" class="calendar-grid" aria-label="比赛日历"></div>
       </section>
