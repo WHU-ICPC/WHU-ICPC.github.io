@@ -1086,6 +1086,8 @@ main {
   max-width: var(--team-width);
   font-weight: 500;
   line-height: 1.55;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .member-cell {
