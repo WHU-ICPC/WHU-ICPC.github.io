@@ -964,5 +964,7 @@ Promise.all([
   .catch((error) => {
     loadingStatus.textContent = `${error.message}。请稍后重试。`;
     playerLoadingStatus.textContent = `${error.message}。请稍后重试。`;
+    renderPage();
     console.error(error);
-  });
+  })
+  .finally(() => document.documentElement.classList.remove("app-loading"));

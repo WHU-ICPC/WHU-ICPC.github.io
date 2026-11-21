@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="app-loading">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,9 +9,15 @@
     />
     <meta name="theme-color" content="#ffffff" />
     <title>WHU ACM-ICPC</title>
+    <style>
+      html.app-loading #page-title,
+      html.app-loading #app-main {
+        visibility: hidden;
+      }
+    </style>
     <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="styles.css?v=25" />
-    <script src="script.js?v=16" defer></script>
+    <script src="script.js?v=17" defer></script>
   </head>
   <body>
     <header class="site-header">
